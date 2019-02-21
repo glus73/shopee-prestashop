@@ -216,7 +216,6 @@ class CedShopeeProduct
                                                 }
                                             }
                                         }
-                                         return array('success' => true, 'message' => $response['msg']);
                                          $alreadyExist = $db->executeS("SELECT * FROM `".DB_PREFIX."cedshopee_uploaded_products` WHERE product_id = '".(int)$product_id."'");
                                         if (isset($alreadyExist) && count($alreadyExist)) {
                                             $db->update(
@@ -279,6 +278,7 @@ class CedShopeeProduct
                                                     );
                                                 }
                                             }
+                                            return array('success' => true, 'message' => $response['msg']);
                                         }
                                     }
                                 } elseif (isset($response['error']) && isset($response['msg']) && $response['msg']) {
@@ -512,7 +512,6 @@ class CedShopeeProduct
                     if (!empty($product_d) && $product_d['0']['product_attribute']) {
                         $product_attribute_d = json_decode($product_d['0']['product_attribute'], true);
                     }
-                    $shoppee_selected_option = false;
 
                     $attributes_id = isset($attribute_shopee['attributes_id']) ? $attribute_shopee['attributes_id'] : '0';
                     if (isset($product_attribute_d[$attributes_id]) && isset($product_attribute_d[$attributes_id]['shopee_attribute']) && isset($product_attribute_d[$attributes_id]['default_values']) && $product_attribute_d[$attributes_id]['default_values']) {
@@ -533,7 +532,11 @@ class CedShopeeProduct
 
     public function getProductOptions($product_id, $store_attribute, $language_id, $attribute_shopee)
     {
-        $product_option_data = '';
+        if($product_id) {
+            $product_option_data = '';
+        } else {
+            $product_option_data = '';
+        }
 
         if ($store_attribute) {
             if (is_numeric($store_attribute) && !empty($store_attribute)) {
@@ -553,7 +556,11 @@ class CedShopeeProduct
 
     public function getProductAttributes($product_id, $store_attribute, $language_id)
     {
-        $default_lang = (int)Configuration::get('PS_LANG_DEFAULT');
+        if($language_id) {
+            $default_lang = $language_id;
+        } else {
+            $default_lang = (int)Configuration::get('PS_LANG_DEFAULT');
+        }
         $product_attribute_data = '';
 
         if ($product_id && $store_attribute) {
@@ -638,7 +645,6 @@ class CedShopeeProduct
 
     public function isVariantProduct($product_id, $default_lang)
     {
-        $db = Db::getInstance();
         $productObject = new Product($product_id, false, $default_lang);
         $variants = $productObject->getAttributeCombinations($default_lang);
         if (isset($variants) && !empty($variants)) {
@@ -682,7 +688,7 @@ class CedShopeeProduct
             return array('success' => true, 'message' =>$productToUpload);
     }
 
-    public function updateInventory($product_id, $data)
+    public function updateInventory($product_id)
     {
         $CedShopeeLibrary = new CedShopeeLibrary;
         $default_lang = (int)Configuration::get('PS_LANG_DEFAULT');
@@ -712,7 +718,7 @@ class CedShopeeProduct
         return $result ;
     }
 
-    public function updatePrice($product_id, $data)
+    public function updatePrice($product_id)
     {
         $CedShopeeLibrary = new CedShopeeLibrary;
         $default_lang = (int)Configuration::get('PS_LANG_DEFAULT');

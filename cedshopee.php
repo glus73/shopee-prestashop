@@ -186,7 +186,7 @@ class CedShopee extends Module
         }
         if ($parent == 0 && _PS_VERSION_ >= '1.7') {
             $tab->id_parent = (int)Tab::getIdFromClassName('SELL');
-            $tab->icon = 'CS';
+            $tab->icon = 'C';
         } else {
             $tab->id_parent = $parent;
         }
@@ -310,6 +310,8 @@ class CedShopee extends Module
                 Configuration::get('CEDSHOPEE_FETCH_ORDER') : '',
             'CEDSHOPEE_ORDER_STATE_IMPORT' => Configuration::get('CEDSHOPEE_ORDER_STATE_IMPORT') ?
                 Configuration::get('CEDSHOPEE_ORDER_STATE_IMPORT') : '',
+            'CEDSHOPEE_ORDER_STATE_ACKNOWLEDGE' => Configuration::get('CEDSHOPEE_ORDER_STATE_ACKNOWLEDGE') ?
+                Configuration::get('CEDSHOPEE_ORDER_STATE_ACKNOWLEDGE') : '',
             'CEDSHOPEE_ORDER_STATE_CANCEL' => Configuration::get('CEDSHOPEE_ORDER_STATE_CANCEL') ?
                 Configuration::get('CEDSHOPEE_ORDER_STATE_CANCEL') : '',
             'CEDSHOPEE_ORDER_STATE_SHIPPED' => Configuration::get('CEDSHOPEE_ORDER_STATE_SHIPPED') ?
@@ -657,6 +659,19 @@ class CedShopee extends Module
                     'label' => $this->l('Order status when Import'),
                     'desc' => $this->l('Order Status While importing order.'),
                     'name' => 'CEDSHOPEE_ORDER_STATE_IMPORT',
+                    'required' => false,
+                    'default_value' => '',
+                    'options' => array(
+                        'query' => $order_states,
+                        'id' => 'id_order_state',
+                        'name' => 'name',
+                    )
+                ),
+                array(
+                    'type' => 'select',
+                    'col' => 6,
+                    'label' => $this->l('Order status when Accepted At Shopee'),
+                    'name' => 'CEDSHOPEE_ORDER_STATE_ACKNOWLEDGE',
                     'required' => false,
                     'default_value' => '',
                     'options' => array(

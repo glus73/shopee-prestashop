@@ -158,7 +158,7 @@ class CedShopeeProfile extends ObjectModel
         $store_options = Attribute::getAttributes($default_lang, false);
         if (!empty($options)) {
             foreach ($options as $option) {
-                foreach ($store_options as $key => $value) {
+                foreach ($store_options as $value) {
                     if ($option['id_attribute_group'] == $value['id_attribute_group']) {
                         $option_value_data[$option['id_attribute_group']][] = array(
                         'id_attribute' => $value['id_attribute'],
@@ -186,8 +186,12 @@ class CedShopeeProfile extends ObjectModel
 
     public function getStoreOptions($catId, $attribute_group_id, $brandName)
     {
+        if($catId) {
+            $option_value_data = array();
+        } else {
+            $option_value_data = array();
+        }
         $db = Db::getInstance();
-        $option_value_data = array();
         $default_lang = (int)Configuration::get('PS_LANG_DEFAULT');
         $sql = "SELECT al.`id_attribute`, al.`name`, a.`position` FROM `"._DB_PREFIX_."attribute` AS a LEFT JOIN `"._DB_PREFIX_."attribute_lang` AS al ON (al.id_attribute = a.id_attribute) WHERE a.`id_attribute_group` = '". (int)$attribute_group_id ."' AND al.`id_lang` = '". (int)$default_lang ."' AND al.`name` LIKE '%". pSQL($brandName) ."%' ORDER BY a.`position` ASC";
         $option_value_query = $db->executeS($sql);

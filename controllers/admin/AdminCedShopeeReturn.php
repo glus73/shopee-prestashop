@@ -275,7 +275,7 @@ class AdminCedShopeeReturnController extends ModuleAdminController
                 'dispute_request' => pSQL(json_encode($request)),
                 'dispute_response' => pSQL(json_encode($response))
                 ),
-            'id=(int)$id'
+            'id='.(int)$id
         );
         return true;
     }

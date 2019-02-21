@@ -493,7 +493,7 @@ class AdminCedShopeeProductController extends ModuleAdminController
                 $fail = 0;
                 if (is_array($product_ids) && count($product_ids)) {
                     foreach ($product_ids as $product_id) {
-                        $result = $CedShopeeProduct->updateInventory($product_id, array());
+                        $result = $CedShopeeProduct->updateInventory($product_id);
                         if (isset($result['item'])) {
                             $updated++;
                         } elseif (isset($result['error'])) {
@@ -538,7 +538,7 @@ class AdminCedShopeeProductController extends ModuleAdminController
                 $fail = 0;
                 if (is_array($product_ids) && count($product_ids)) {
                     foreach ($product_ids as $product_id) {
-                        $result = $CedShopeeProduct->updatePrice($product_id, array());
+                        $result = $CedShopeeProduct->updatePrice($product_id);
                         if (!isset($result['error'])) {
                             $updated++;
                         } else {

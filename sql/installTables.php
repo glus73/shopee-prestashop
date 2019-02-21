@@ -20,99 +20,99 @@ $db =  Db::getInstance();
 $sql_queries = array();
 
 $sql_queries[] = "CREATE TABLE IF NOT EXISTS `" . _DB_PREFIX_ . "cedshopee_discount` (
-          `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
-          `discount_name` text COLLATE utf8_unicode_ci NOT NULL,
+          `id` int(11) NOT NULL AUTO_INCREMENT,
+          `discount_name` text,
           `discount_id` int(11) NOT NULL,
-          `start_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-          `end_date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+          `start_date` datetime,
+          `end_date` datetime,
           `items` longtext NOT NULL,
           PRIMARY KEY (`id`)
         ) ;";
 
 $sql_queries[] = "CREATE TABLE IF NOT EXISTS `" . _DB_PREFIX_ . "cedshopee_uploaded_products` (
-          `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+          `id` int(11) NOT NULL AUTO_INCREMENT,
           `product_id` int(11) NOT NULL,
           `shopee_profile_id` int(11) NOT NULL,
-          `shopee_status` text COLLATE utf8_unicode_ci NOT NULL,
-          `error_message` longtext COLLATE utf8_unicode_ci NOT NULL,
+          `shopee_status` text,
+          `error_message` longtext,
           `shopee_item_id` bigint(20) NOT NULL,
-          `logistics` text COLLATE utf8_unicode_ci NOT NULL,
-          `wholesale` text COLLATE utf8_unicode_ci NOT NULL,
+          `logistics` text,
+          `wholesale` text,
           PRIMARY KEY (`id`)
         ) ;";
 
 $sql_queries[] = "CREATE TABLE IF NOT EXISTS `" . _DB_PREFIX_ . "cedshopee_attribute` (
-          `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+          `id` int(11) NOT NULL AUTO_INCREMENT,
           `attribute_id` bigint(20) NOT NULL,
-          `attribute_name` text COLLATE utf8_unicode_ci NOT NULL,
+          `attribute_name` text,
           `is_mandatory` tinyint(1) NOT NULL,
-          `attribute_type` text COLLATE utf8_unicode_ci NOT NULL,
-          `input_type` text COLLATE utf8_unicode_ci NOT NULL,
-          `options` longtext COLLATE utf8_unicode_ci NOT NULL,
+          `attribute_type` text,
+          `input_type` text,
+          `options` longtext,
           `category_id` bigint(20) NOT NULL,
           PRIMARY KEY (`id`)
         ) ;";
 
 $sql_queries[] = "CREATE TABLE IF NOT EXISTS `" . _DB_PREFIX_ . "cedshopee_category` (
-          `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+          `id` int(11) NOT NULL AUTO_INCREMENT,
           `category_id` bigint(11) NOT NULL,
-          `category_name` text COLLATE utf8_unicode_ci NOT NULL,
+          `category_name` text,
           `parent_id` bigint(20) NOT NULL,
           `has_children` bigint(20) NOT NULL,
           PRIMARY KEY (`id`)
         ) ;";
 
 $sql_queries[] = "CREATE TABLE IF NOT EXISTS `" . _DB_PREFIX_ . "cedshopee_logistics` (
-          `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
-          `logistic_id` text COLLATE utf8_unicode_ci NOT NULL,
-          `logistic_name` text COLLATE utf8_unicode_ci NOT NULL,
+          `id` int(11) NOT NULL AUTO_INCREMENT,
+          `logistic_id` text,
+          `logistic_name` text,
           `has_cod` tinyint(1) NOT NULL,
           `enabled` tinyint(1) NOT NULL,
-          `fee_type` text COLLATE utf8_unicode_ci NOT NULL,
-          `sizes` longtext COLLATE utf8_unicode_ci NOT NULL,
-          `weight_limits` longtext COLLATE utf8_unicode_ci NOT NULL,
-          `item_max_dimension` longtext COLLATE utf8_unicode_ci NOT NULL,
+          `fee_type` text,
+          `sizes` longtext,
+          `weight_limits` longtext,
+          `item_max_dimension` longtext,
           PRIMARY KEY (`id`)
         ) ;";
 
 $sql_queries[] = "CREATE TABLE IF NOT EXISTS `" . _DB_PREFIX_ . "cedshopee_order` (
-          `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
-          `order_place_date` datetime DEFAULT NULL COMMENT 'Order Place Date',
-          `prestashop_order_id` int(11) DEFAULT NULL COMMENT 'Prestashop Order Id',
-          `status` text COLLATE utf8_unicode_ci COMMENT 'status',
-          `order_data` text COLLATE utf8_unicode_ci COMMENT 'Order Data',
-          `shipment_data` text COLLATE utf8_unicode_ci COMMENT 'Shipping Data',
-          `shopee_order_id` text COLLATE utf8_unicode_ci COMMENT 'Reference Order Id',
-          `shipment_request_data` text COLLATE utf8_unicode_ci COMMENT 'Shipment Data send on shopee',
-          `shipment_response_data` text COLLATE utf8_unicode_ci COMMENT 'Shipment Data get from shopee',
+          `id` int(11) NOT NULL AUTO_INCREMENT,
+          `order_place_date` text,
+          `prestashop_order_id` int(11),
+          `status` text,
+          `order_data` text,
+          `shipment_data` text,
+          `shopee_order_id` text,
+          `shipment_request_data` text,
+          `shipment_response_data` text,
           PRIMARY KEY (`id`)
         ) ;";
 
 $sql_queries[] = "CREATE TABLE IF NOT EXISTS `" . _DB_PREFIX_ . "cedshopee_order_error` (
-          `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
-          `shopee_order_id` text COLLATE utf8_unicode_ci NOT NULL COMMENT 'Purchase Order Id',
-          `merchant_sku` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '0' COMMENT 'Reference_Number',
-          `reason` text COLLATE utf8_unicode_ci NOT NULL COMMENT 'Reason',
-          `order_data` text COLLATE utf8_unicode_ci NOT NULL COMMENT 'Order Data',
+          `id` int(11) NOT NULL AUTO_INCREMENT,
+          `shopee_order_id` text,
+          `merchant_sku` varchar(255),
+          `reason` text,
+          `order_data` text,
           PRIMARY KEY (`id`)
         ) ;";
 
 $sql_queries[] = "CREATE TABLE IF NOT EXISTS `" . _DB_PREFIX_ . "cedshopee_products` (
           `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
           `product_id` int(11) NOT NULL,
-          `shopee_status` text COLLATE utf8_unicode_ci NOT NULL,
-          `error_message` longtext COLLATE utf8_unicode_ci NOT NULL,
+          `shopee_status` text,
+          `error_message` longtext,
           `shopee_item_id` bigint(20) NOT NULL,
           PRIMARY KEY (`id`)
         ) ;";
 
 $sql_queries[] = "CREATE TABLE IF NOT EXISTS `" . _DB_PREFIX_ . "cedshopee_product_variations` (
-          `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+          `id` int(11) NOT NULL AUTO_INCREMENT,
           `product_id` int(11) NOT NULL,
-          `name` text COLLATE utf8_unicode_ci NOT NULL,
-          `variation_sku` text COLLATE utf8_unicode_ci NOT NULL,
-          `status` text COLLATE utf8_unicode_ci NOT NULL,
-          `is_removed` text COLLATE utf8_unicode_ci NOT NULL,
+          `name` text,
+          `variation_sku` text,
+          `status` text,
+          `is_removed` text,
           `variation_id` int(11) NOT NULL,
           `stock` int(11) NOT NULL,
           `price` float NOT NULL,
@@ -120,43 +120,43 @@ $sql_queries[] = "CREATE TABLE IF NOT EXISTS `" . _DB_PREFIX_ . "cedshopee_produ
         ) ;";
 
 $sql_queries[] = "CREATE TABLE IF NOT EXISTS `" . _DB_PREFIX_ . "cedshopee_profile` (
-          `id` int(10) NOT NULL AUTO_INCREMENT COMMENT 'ID',
-          `title` text COLLATE utf8_unicode_ci NOT NULL,
-          `store_category` longtext COLLATE utf8_unicode_ci NOT NULL,
-          `shopee_categories` longtext COLLATE utf8_unicode_ci NOT NULL,
-          `shopee_category` longtext COLLATE utf8_unicode_ci NOT NULL,
-          `profile_attribute_mapping` longtext COLLATE utf8_unicode_ci NOT NULL,
+          `id` int(10) NOT NULL AUTO_INCREMENT,
+          `title` text,
+          `store_category` longtext,
+          `shopee_categories` longtext,
+          `shopee_category` longtext,
+          `profile_attribute_mapping` longtext,
           `status` int(11) NOT NULL,
-          `logistics` longtext COLLATE utf8_unicode_ci NOT NULL,
-          `wholesale` longtext COLLATE utf8_unicode_ci NOT NULL,
-          `default_mapping` text COLLATE utf8_unicode_ci NOT NULL,
-          `profile_store` text COLLATE utf8_unicode_ci NOT NULL,
-          `product_manufacturer` text COLLATE utf8_unicode_ci NOT NULL,
+          `logistics` longtext,
+          `wholesale` longtext,
+          `default_mapping` text,
+          `profile_store` text,
+          `product_manufacturer` text,
           `profile_language` int(11) NOT NULL,
-          `shopee_category_name` text COLLATE utf8_unicode_ci NOT NULL,
+          `shopee_category_name` text,
           PRIMARY KEY (`id`)
         ) ;";
 
 $sql_queries[] = "CREATE TABLE IF NOT EXISTS `" . _DB_PREFIX_ . "cedshopee_profile_products` (
-          `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+          `id` int(11) NOT NULL AUTO_INCREMENT,
           `product_id` int(11) NOT NULL,
           `shopee_profile_id` int(11) NOT NULL,
-          `shopee_status` text COLLATE utf8_unicode_ci NOT NULL,
-          `error_message` longtext COLLATE utf8_unicode_ci NOT NULL,
+          `shopee_status` text,
+          `error_message` longtext,
           `shopee_item_id` bigint(20) NOT NULL,
           PRIMARY KEY (`id`)
         ) ;";
 
 $sql_queries[] = "CREATE TABLE IF NOT EXISTS `" . _DB_PREFIX_ . "cedshopee_return` (
-          `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
-          `reason` text COLLATE utf8_unicode_ci NOT NULL,
-          `text_reason` longtext COLLATE utf8_unicode_ci NOT NULL,
-          `returnsn` text COLLATE utf8_unicode_ci NOT NULL,
-          `ordersn` text COLLATE utf8_unicode_ci NOT NULL,
-          `return_data` longtext COLLATE utf8_unicode_ci NOT NULL,
-          `status` text COLLATE utf8_unicode_ci NOT NULL,
-          `dispute_request` longtext COLLATE utf8_unicode_ci NOT NULL,
-          `dispute_response` longtext COLLATE utf8_unicode_ci NOT NULL,
+          `id` int(11) NOT NULL AUTO_INCREMENT,
+          `reason` text,
+          `text_reason` longtext,
+          `returnsn` text,
+          `ordersn` text,
+          `return_data` longtext,
+          `status` text,
+          `dispute_request` longtext,
+          `dispute_response` longtext,
           PRIMARY KEY (`id`)
         ) ;";
 
@@ -166,7 +166,7 @@ $sql_queries[] = "CREATE TABLE IF NOT EXISTS `" . _DB_PREFIX_ . "cedshopee_logs`
         `type` varchar(150) NOT NULL,
         `message` text NOT NULL,   
         `data` longtext NOT NULL,   
-        `created_at` datetime default current_timestamp,   
+        `created_at` datetime,   
          PRIMARY KEY (`id`) 
         );";
 

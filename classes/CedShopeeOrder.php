@@ -40,9 +40,6 @@ class CedShopeeOrder
                     json_encode($response)
                 );
                 if (isset($response['success']) && $response['success'] == true) {
-                // if (isset($response['error']) && $response['error']) {
-                    $order_ids = array();
-                    // $response = $response['message'];
                     if (is_array($response)
                         && isset($response['orders'])
                         && count($response['orders'])
@@ -53,7 +50,6 @@ class CedShopeeOrder
                         foreach ($response['orders'] as $key => $orders) {
                             if (isset($orders) && $orders) {
                                 $order_to_fetch = array();
-                                // $orderData = $order['Order'];
                                 foreach ($orders as $order) {
                                     $shopeeOrderId = $order['ordersn'];
                                     $already_exist = $this->isShopeeOrderAlreadyExist($shopeeOrderId);
@@ -65,7 +61,6 @@ class CedShopeeOrder
                                     }
                                 }
                                 $orders_data = $this->fetchOrderDetails($order_to_fetch);
-
                                 foreach ($orders_data['orders'] as $order_data) {
                                     if (isset($order_data['ordersn']) && $order_data['ordersn']) {
                                         $CedShopeeLibrary->log(json_encode($order_data), '6', true);
@@ -316,7 +311,6 @@ class CedShopeeOrder
             // $sku = $orderData['sku'];
             $order_items = $orderData['items'];
             foreach ($order_items as $orderLine => $item) {
-                $cancelQty = 0;
                 $item_sku = isset($item['item_sku']) ? $item['item_sku'] : '';
                 $variation_sku = isset($item['variation_sku']) ? $item['variation_sku'] : '';
 
@@ -348,8 +342,6 @@ class CedShopeeOrder
                 }
                 if (!$producToAdd->checkQty((int)$qty)) {
                     $quantity = $producToAdd->getQuantity($id_product);
-                    $cancelQty = $qty - $quantity;
-                    $qty = $quantity;
                     $this->orderErrorInformation(
                         $sku,
                         $shopeeOrderId,
@@ -714,7 +706,7 @@ class CedShopeeOrder
             `merchant_sku`,`shopee_order_id`,`reason`,`order_data`)
             VALUES('" . pSQL($sku) . "','" . pSQL($shopeeOrderId) . "','" . pSQL($reason) . "',
             '" . pSQL(json_encode($orderData)) . "')";
-            $result = $db->Execute($sql_insert);
+            $db->Execute($sql_insert);
             // if (count($result)) {
             //     if (Configuration::get('CEDSHOPEE_REJECTED_ORDER')) {
             //         $this->rejectOrder($shopeeOrderId, 1);
@@ -767,10 +759,6 @@ class CedShopeeOrder
                 if (isset($response['result']) && $response['result']) {
                     if (isset($response['result']['success_count']) && $response['result']['success_count']) {
                         $db = Db::getInstance();
-                        $prestashopOrderId = $db->getValue(
-                            'SELECT `prestashop_order_id` FROM `' . _DB_PREFIX_ . 'cedshopee_order` 
-	                         WHERE `shopee_order_id`="' . pSQL($ordersn) . '"'
-                        );
                         $db->update(
                             'cedshopee_order',
                             array(
@@ -778,7 +766,8 @@ class CedShopeeOrder
                             ),
                             'shopee_order_id="'.pSQL($ordersn).'"'
                         );
-                        $this->updateOrderStatus($ordersn, 'shipped');
+                        $idShipped = Configuration::get('CEDSHOPEE_ORDER_STATE_SHIPPED');
+                        $this->updateOrderStatus($ordersn, $idShipped);
                         return array('success' => true, 'response' => json_encode($response));
                     } else {
                         return array('success' => false, 'message' => $response['result']['error_codes']);
@@ -807,7 +796,8 @@ class CedShopeeOrder
             if (isset($response['error'])) {
                 return array('success' => false, 'message' => $response['error']);
             }
-            $this->updateOrderStatus($shopee_order_id, 'acknowledged');
+            $idAck = Configuration::get('CEDSHOPEE_ORDER_STATE_ACKNOWLEDGE');
+            $this->updateOrderStatus($shopee_order_id, $idAck);
             return $response;
         } catch (Exception $e) {
             $CedShopeeLibrary->log('acceptOrder' . var_export($response, true));
@@ -815,7 +805,7 @@ class CedShopeeOrder
         }
     }
 
-    public function updateOrderStatus($purchaseOrderId, $status = 'CEDSHOPEE_ORDER_STATE')
+    public function updateOrderStatus($purchaseOrderId, $id_order_state)
     {
         $db = Db::getInstance();
         $result = $db->ExecuteS("SELECT `prestashop_order_id` FROM `" . _DB_PREFIX_ . "shopee_order` 
@@ -824,7 +814,6 @@ class CedShopeeOrder
         if (is_array($result) && count($result)) {
             $order_id = $result['0']['prestashop_order_id'];
         }
-        $id_order_state = (int)Configuration::get($status);
         $order_state = new OrderState($id_order_state);
         $order = new Order((int)$order_id);
         $history = new OrderHistory();

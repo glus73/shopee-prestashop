@@ -50,7 +50,7 @@ try {
         $fail = 0;
            
         foreach ($product_ids as $product_id) {
-            $result = $CedShopeeProduct->updatePrice($product_id, array());
+            $result = $CedShopeeProduct->updatePrice($product_id);
             if (isset($result['item'])) {
                 $updated++;
             } elseif (isset($result['error'])) {
