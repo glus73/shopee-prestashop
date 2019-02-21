@@ -21,7 +21,7 @@ require_once _PS_MODULE_DIR_ . 'cedshopee/classes/CedShopeeProduct.php';
 
 class AdminCedShopeeUpdateStatusController extends ModuleAdminController
 {
-	public function __construct()
+    public function __construct()
     {
         $this->bootstrap = true;
         parent::__construct();
@@ -58,7 +58,7 @@ class AdminCedShopeeUpdateStatusController extends ModuleAdminController
 
     public function ajaxProcessUpdateStatus()
     {
-        die('ok');
+        $db = Db::getInstance();
         $CedShopeeLibrary = new CedShopeeLibrary;
         try {
             $pagination_offset = Tools::getValue('pagination_offset');
@@ -74,11 +74,11 @@ class AdminCedShopeeUpdateStatusController extends ModuleAdminController
                             'shopee_status' => pSQL($items['status'])
                             ),
                         'shopee_item_id='. (int) $items["item_id"]
-                        );
+                    );
                     // $sql = "UPDATE`" . DB_PREFIX . "cedshopee_uploaded_products` SET shopee_status='" . $items['status'] . "' where `shopee_item_id`='" . $items['item_id'] . "'";
                     // $this->db->query($sql);
                 }
-                if(isset($response['more']) && $response['more']) {
+                if (isset($response['more']) && $response['more']) {
                     die(json_encode(array('success' => true, 'pagination_offset' => (int)$pagination_entries_per_page, 'pagination_entries_per_page' =>(int) $pagination_entries_per_page )));
                 } else {
                     die(json_encode(array('success' => true, 'message' => 'Status Updated Successfully.')));
@@ -86,13 +86,13 @@ class AdminCedShopeeUpdateStatusController extends ModuleAdminController
             } else {
                 if (isset($response['msg'])) {
                     die(json_encode(array('success' => false, 'message' => $response['msg'])));
-                } else if(isset($response['error'])){
+                } elseif (isset($response['error'])) {
                     die(json_encode(array('success' => false, 'message' => $response['error'])));
                 } else {
                     die(json_encode(array('success' => false, 'message' => ' No Response Found in store.')));
                 }
             }
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $CedShopeeLibrary->log(
                 'AdminCedShopeeUpdateStatusController::fetchStatus',
                 'Exception',

@@ -20,7 +20,7 @@ include_once _PS_MODULE_DIR_ . 'cedshopee/classes/CedShopeeLibrary.php';
 
 class CedShopeeProfile extends ObjectModel
 {
-	public static $definition = array(
+    public static $definition = array(
         'table'     => 'cedshopee_profile',
         'primary'   => 'id',
         'fields'    => array(
@@ -104,7 +104,7 @@ class CedShopeeProfile extends ObjectModel
         }
     }
 
-    public function addAttributes($category_id, $data) 
+    public function addAttributes($category_id, $data)
     {
         $db = Db::getInstance();
         $db->execute("DELETE FROM " . _DB_PREFIX_ . "cedshopee_attribute WHERE category_id = '" . (int)$category_id . "'");
@@ -113,7 +113,7 @@ class CedShopeeProfile extends ObjectModel
         }
     }
 
-    public function getMappedAttributes($profile_id) 
+    public function getMappedAttributes($profile_id)
     {
         $db = Db::getInstance();
         $result = $db->executeS("SELECT `profile_attribute_mapping` FROM " . _DB_PREFIX_ . "cedshopee_profile WHERE id = '" . (int)$profile_id . "'");
@@ -155,15 +155,11 @@ class CedShopeeProfile extends ObjectModel
         $sql = "SELECT agl.`id_attribute_group`, agl.`name`, agl.`id_lang`, ag.`group_type`, ag.`position` FROM `"._DB_PREFIX_."attribute_group_lang` AS agl LEFT JOIN `"._DB_PREFIX_."attribute_group` AS ag ON (agl.id_attribute_group = ag.id_attribute_group) WHERE agl.`id_lang` = '". (int)$default_lang ."' ";
         $options = $db->executeS($sql);
         $option_value_data = array();
-        $store_options = Attribute::getAttributes($default_lang,false);
-        if(!empty($options))
-        {
-           foreach($options as $option)
-            {
-                foreach($store_options as $key => $value)
-                { 
-                    if($option['id_attribute_group'] == $value['id_attribute_group'])
-                    {
+        $store_options = Attribute::getAttributes($default_lang, false);
+        if (!empty($options)) {
+            foreach ($options as $option) {
+                foreach ($store_options as $key => $value) {
+                    if ($option['id_attribute_group'] == $value['id_attribute_group']) {
                         $option_value_data[$option['id_attribute_group']][] = array(
                         'id_attribute' => $value['id_attribute'],
                         'name' => $value['name']
@@ -172,7 +168,7 @@ class CedShopeeProfile extends ObjectModel
                 }
             }
         }
-        return array('options' => $options, 'option_values' => $option_value_data); 
+        return array('options' => $options, 'option_values' => $option_value_data);
     }
 
     public function getBrands($catId, $attribute_id, $brandName)
@@ -181,7 +177,7 @@ class CedShopeeProfile extends ObjectModel
         $brandArray = array();
         $results = $db->executeS("SELECT * FROM `". _DB_PREFIX_ ."cedshopee_attribute` WHERE `category_id` = '".$catId."' AND `attribute_id` = '".$attribute_id."'");
         foreach ($results as $res) {
-            $brandArray = array_merge_recursive($brandArray, json_decode($res['options'],true));
+            $brandArray = array_merge_recursive($brandArray, json_decode($res['options'], true));
         }
         $input = preg_quote($brandName, '~');
         $result = preg_grep('~' . $input . '~', $brandArray);

@@ -21,9 +21,9 @@ include_once  _PS_MODULE_DIR_.'cedshopee/classes/CedShopeeLibrary.php';
 
 class AdminCedShopeeFailedOrderController extends ModuleAdminController
 {
-	public function __construct()
-	{
-		$this->db = Db::getInstance();
+    public function __construct()
+    {
+        $this->db = Db::getInstance();
         $this->bootstrap  = true;
         $this->table = 'cedshopee_order_error';
         $this->identifier = 'id';
@@ -64,11 +64,11 @@ class AdminCedShopeeFailedOrderController extends ModuleAdminController
                 );
                 $status = $CedShopeeLibrary->isEnabled();
                 if ($status) {
-                	$params = array(
-                		'id' => $id,
-                		'order_line' => 1,
-                		'url' => 'v3/orders'
-            		);
+                    $params = array(
+                        'id' => $id,
+                        'order_line' => 1,
+                        'url' => 'v3/orders'
+                    );
                     $response = $CedShopeeOrder->cancelOrder($params);
                     if (isset($response['success'])&& $response['success'] == true) {
                         $this->confirmations[] = isset($response['message']) ?
@@ -83,19 +83,19 @@ class AdminCedShopeeFailedOrderController extends ModuleAdminController
             }
         }
         parent::__construct();
-	}
+    }
 
-	public function postProcess()
+    public function postProcess()
     {
-        if(Tools::getIsset('delete_failed_orders') && Tools::getValue('delete_failed_orders')) {
+        if (Tools::getIsset('delete_failed_orders') && Tools::getValue('delete_failed_orders')) {
             $db = Db::getInstance();
             $sql = "TRUNCATE TABLE `"._DB_PREFIX_."cedshopee_order_error`";
-           $res = $db->execute($sql);
-           if($res) {
-               $this->confirmations[] = "Failed Orders Deleted Successfully";
-           } else {
-               $this->errors[] = "Failed To Delete";
-           }
+            $res = $db->execute($sql);
+            if ($res) {
+                $this->confirmations[] = "Failed Orders Deleted Successfully";
+            } else {
+                $this->errors[] = "Failed To Delete";
+            }
         }
         return parent::postProcess();
     }
@@ -112,10 +112,10 @@ class AdminCedShopeeFailedOrderController extends ModuleAdminController
         parent::initPageHeaderToolbar();
     }
 
-	public function processBulkCancel()
+    public function processBulkCancel()
     {
-    	$CedShopeeLibrary = new CedShopeeLibrary;
-    	$CedShopeeOrder = new CedShopeeOrder;
+        $CedShopeeLibrary = new CedShopeeLibrary;
+        $CedShopeeOrder = new CedShopeeOrder;
         $ids = $this->boxes;
         if (Tools::getIsset($ids) && count($ids)) {
             foreach ($ids as $id) {
@@ -126,11 +126,11 @@ class AdminCedShopeeFailedOrderController extends ModuleAdminController
                     );
                     $status = $CedShopeeLibrary->isEnabled();
                     if ($status) {
-                	    $params = array(
-	                		'id' => $id,
-	                		'order_line' => '1',
-	                		'url' => 'v3/orders'
-                		);
+                        $params = array(
+                            'id' => $id,
+                            'order_line' => '1',
+                            'url' => 'v3/orders'
+                        );
                         $response = $CedShopeeOrder->cancelOrder($params);
                         if (isset($response['success'])&& $response['success'] == true) {
                             $this->confirmations[] = isset($response['message']) ?
@@ -147,7 +147,7 @@ class AdminCedShopeeFailedOrderController extends ModuleAdminController
         }
     }
 
-	public function displayCancelLink($token = null, $id = null, $name = null)
+    public function displayCancelLink($token = null, $id = null, $name = null)
     {
         if ($token && $name) {
             $tpl = $this->createTemplate('helpers/list/list_action_view.tpl');

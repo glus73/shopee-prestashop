@@ -16,13 +16,13 @@
  */
 
 window.onload = function () {
-    if(document.getElementById('CEDSHOPEE_LIVE_MODE')) {
+    if (document.getElementById('CEDSHOPEE_LIVE_MODE')) {
         var liveMode = document.getElementById('CEDSHOPEE_LIVE_MODE').value;
         if (liveMode && (liveMode == 'live' || liveMode == '')) {
             // https://partner.shopeemobile.com/api/v1/shop/auth_partner
 
             document.getElementById('CEDSHOPEE_API_URL').value = 'https://partner.test.shopeemobile.com/api/v1/';
-        } else if(liveMode && (liveMode == 'sandbox')) {
+        } else if (liveMode && (liveMode == 'sandbox')) {
             // https://partner.uat.shopeemobile.com/api/v1/shop/auth_partner
             document.getElementById('CEDSHOPEE_API_URL').value = 'https://partner.shopeemobile.com/api/v1/';
         }
@@ -31,12 +31,12 @@ window.onload = function () {
     }
 }
 
-function modeLive() {
+function modeLive()
+{
     var mode = this.value;
     if (mode == 'live') {
          document.getElementById('CEDSHOPEE_API_URL').value = 'https://partner.shopeemobile.com/api/v1/';
-        
-    } else if(mode = 'sandbox') {
-       document.getElementById('CEDSHOPEE_API_URL').value = 'https://partner.test.shopeemobile.com/api/v1/';
+    } else if (mode = 'sandbox') {
+        document.getElementById('CEDSHOPEE_API_URL').value = 'https://partner.test.shopeemobile.com/api/v1/';
     }
 }

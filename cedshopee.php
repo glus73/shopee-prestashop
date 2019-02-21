@@ -64,8 +64,8 @@ class CedShopee extends Module
         require_once _PS_MODULE_DIR_ . 'cedshopee/sql/installTables.php';
         if (!parent::install()
             || !$this->installTab(
-                'AdminCedShopee', 
-                'Shopee Integration', 
+                'AdminCedShopee',
+                'Shopee Integration',
                 0
             )
             || !$this->installTab(
@@ -207,9 +207,9 @@ class CedShopee extends Module
         }
     }
     
-    public function initContent() 
+    public function initContent()
     {
-        if(Tools::getIsset('ajax') && Tools::getValue('ajax')) {
+        if (Tools::getIsset('ajax') && Tools::getValue('ajax')) {
             $this->ajax = true;
         }
         parent::initContent();
@@ -233,32 +233,32 @@ class CedShopee extends Module
             $signature = Configuration::get('CEDSHOPEE_SIGNATURE');
             $price_type = Tools::getValue('CEDSHOPEE_PRICE_VARIANT_TYPE');
             $order_email = Tools::getValue('CEDSHOPEE_ORDER_EMAIL');
-                if (isset($price_type)
+            if (isset($price_type)
                     && ($price_type == 'increase_fixed' || $price_type == 'decrease_fixed')
                 ) {
-                    $fixed_price = Tools::getValue('CEDSHOPEE_PRICE_VARIANT_FIXED');
-                    if (empty($fixed_price) || !Validate::isFloat($fixed_price)) {
-                        $output .= $this->displayError($this->l('The fixed price should be a valid number'));
-                    }
-                } elseif (isset($price_type)
+                $fixed_price = Tools::getValue('CEDSHOPEE_PRICE_VARIANT_FIXED');
+                if (empty($fixed_price) || !Validate::isFloat($fixed_price)) {
+                    $output .= $this->displayError($this->l('The fixed price should be a valid number'));
+                }
+            } elseif (isset($price_type)
                     && ($price_type == 'increase_per' || $price_type == 'decrease_per')
                 ) {
-                    $fixed_per = Tools::getValue('CEDSHOPEE_PRICE_VARIANT_PER');
-                    if (empty($fixed_per) || !Validate::isFloat($fixed_per)) {
-                        $output .= $this->displayError($this->l('The fixed percentage price should be a valid number'));
-                    }
-                } elseif (!Validate::isEmail($order_email)) {
-                    $output .= $this->displayError($this->l('Order email is invalid'));
-                } else {
-                    if (empty($partner_id)
-                        || empty($shop_id)
-                        || empty($signature)
-                    ) {
-                        $output .= $this->displayError($this->l('Invalid Api credentials. '));
-                    } else {
-                        $output .= $this->displayConfirmation("Shopee configuration saved successfully");
-                    }
+                $fixed_per = Tools::getValue('CEDSHOPEE_PRICE_VARIANT_PER');
+                if (empty($fixed_per) || !Validate::isFloat($fixed_per)) {
+                    $output .= $this->displayError($this->l('The fixed percentage price should be a valid number'));
                 }
+            } elseif (!Validate::isEmail($order_email)) {
+                $output .= $this->displayError($this->l('Order email is invalid'));
+            } else {
+                if (empty($partner_id)
+                    || empty($shop_id)
+                    || empty($signature)
+                ) {
+                    $output .= $this->displayError($this->l('Invalid Api credentials. '));
+                } else {
+                    $output .= $this->displayConfirmation("Shopee configuration saved successfully");
+                }
+            }
         }
         return $output . $this->getConfigForm();
     }
@@ -353,7 +353,7 @@ class CedShopee extends Module
     /*
     * General form details
     */
-    public function getGeneralSettingForm() 
+    public function getGeneralSettingForm()
     {
         $this->context->smarty->assign(array(
             'base_url' => Context::getContext()->shop->getBaseURL(true)
@@ -448,7 +448,7 @@ class CedShopee extends Module
     /*
     * Product form details
     */
-    public function getProductSettingForm() 
+    public function getProductSettingForm()
     {
         $this->context->smarty->assign(array(
             'CEDSHOPEE_PRICE_VARIATION_TYPE' => Configuration::get('CEDSHOPEE_PRICE_VARIATION_TYPE')
@@ -613,7 +613,8 @@ class CedShopee extends Module
     /*
     * Order form details
     */
-    public function getOrderSettingForm(){
+    public function getOrderSettingForm()
+    {
 
         $db = Db::getInstance();
         $id_lang = ((int)Configuration::get('CEDSHOPEE_LANGUAGE_STORE')) ?
@@ -776,12 +777,12 @@ class CedShopee extends Module
         $url ='shop/get';
         $params= array();
         $response = $cedshopeeLib->postRequest($url, $params);
-        $cedshopeeLib->log('=====validate===',6,true);
-        $cedshopeeLib->log(json_encode($response),6,true);
-        if(isset($response['error']) && $response['error']) {
+        $cedshopeeLib->log('=====validate===', 6, true);
+        $cedshopeeLib->log(json_encode($response), 6, true);
+        if (isset($response['error']) && $response['error']) {
             $response   =   $response['msg'];
-            if($response) {
-               die(json_encode(array('success'=> false, 'message' => 'Validation error : Please Check the above details')));
+            if ($response) {
+                die(json_encode(array('success'=> false, 'message' => 'Validation error : Please Check the above details')));
             }
         } else {
             die(json_encode(array('success'=> true, 'message' => 'Woah You are all set. Details Validated Successfully')));
@@ -791,8 +792,9 @@ class CedShopee extends Module
     public function ajaxProcessValidateResult($post)
     {
         $db = Db::getInstance();
-        if(!isset($post['result']))
-        $post['result'] = Tools::getValue('result'); 
+        if (!isset($post['result'])) {
+            $post['result'] = Tools::getValue('result');
+        }
         if (isset($post['result']) && $post['result']) {
             $name ='CEDSHOPEE_VALIDATE_STATUS';
             $id_shop = Context::getContext()->shop->id;
@@ -828,4 +830,3 @@ class CedShopee extends Module
         // }
     }
 }
-

@@ -21,7 +21,7 @@ require_once _PS_MODULE_DIR_ . 'cedshopee/classes/CedShopeeProduct.php';
 
 class AdminCedShopeeProductController extends ModuleAdminController
 {
-	/**
+    /**
      * @var string name of the tab to display
      */
     protected $tab_display;
@@ -36,8 +36,8 @@ class AdminCedShopeeProductController extends ModuleAdminController
 
     protected $id_current_category;
     
-	public function __construct()
-	{
+    public function __construct()
+    {
         $this->db = Db::getInstance();
         $this->context = Context::getContext();
         $this->bootstrap = true;
@@ -315,7 +315,7 @@ class AdminCedShopeeProductController extends ModuleAdminController
         if (Tools::isSubmit('submitProductSave')) {
             $this->saveProduct();
         }
-	}
+    }
 
     public function viewDetailsButton($data, $rowData)
     {
@@ -336,16 +336,14 @@ class AdminCedShopeeProductController extends ModuleAdminController
         $CedShopeeLibrary = new CedShopeeLibrary;
         $productID = Tools::getValue('product_id');
         $json = array();
-        if(!empty($productID))
-        {
+        if (!empty($productID)) {
             $shopee_item_id = $this->db->getValue("SELECT `shopee_item_id` FROM `". _DB_PREFIX_ ."cedshopee_uploaded_products` WHERE `product_id` = '". $productID ."' ");
-            if(!empty($shopee_item_id)) 
-            {
+            if (!empty($shopee_item_id)) {
                 $url = 'item/get';
                 $params = array(
                     'item_id' => $shopee_item_id
                     );
-                $response = $CedShopeeLibrary->postRequest($url,$params);
+                $response = $CedShopeeLibrary->postRequest($url, $params);
                 if (isset($response['item'])) {
                     $json = array('success' => true, 'message' => $response['item']);
                 } elseif (isset($response['error'])) {
@@ -375,7 +373,6 @@ class AdminCedShopeeProductController extends ModuleAdminController
                 'desc' => 'Update Status',
                 'icon' => 'process-icon-download'
             );
-            
         }
         parent::initPageHeaderToolbar();
     }
@@ -416,14 +413,13 @@ class AdminCedShopeeProductController extends ModuleAdminController
         );
         parent::renderForm();
         return $productTemplate;
-
     }
 
     public function getProductById($product_id)
     {
+        $response = array();
         $result = $this->db->executeS("SELECT * FROM `". _DB_PREFIX_ ."cedshopee_uploaded_products` WHERE `product_id` = '". $product_id ."' ");
-        if(!empty($result))
-        {
+        if (!empty($result)) {
             $productData = $result[0];
             $response['logistics'] = json_decode($productData['logistics'], true);
             $response['wholesale'] = json_decode($productData['wholesale'], true);
@@ -438,10 +434,9 @@ class AdminCedShopeeProductController extends ModuleAdminController
         $product_id = Tools::getValue('id_product');
         $logistics = Tools::getValue('shopeeLogistics');
         $wholesale = Tools::getValue('shopeeWholesale');
-        if(!empty($product_id))
-        {
+        if (!empty($product_id)) {
             $productExist = $this->db->getValue("SELECT `id` FROM `". _DB_PREFIX_ ."cedshopee_uploaded_products` WHERE `product_id` = '". $product_id ."' ");
-            if(!empty($productExist)) {
+            if (!empty($productExist)) {
                 $res = $this->db->update(
                     'cedshopee_uploaded_products',
                     array(
@@ -449,7 +444,7 @@ class AdminCedShopeeProductController extends ModuleAdminController
                         'wholesale' => pSQL(json_encode($wholesale))
                         ),
                     'id=' . (int)$productExist
-                    );
+                );
                 if ($res) {
                     $link = new LinkCore();
                     $controller_link = $link->getAdminLink('AdminCedShopeeProduct').'&updated=1';
@@ -464,7 +459,7 @@ class AdminCedShopeeProductController extends ModuleAdminController
                         'logistics' => pSQL(json_encode($logistics)),
                         'wholesale' => pSQL(json_encode($wholesale))
                         )
-                    );
+                );
                 if ($res) {
                     $link = new LinkCore();
                     $controller_link = $link->getAdminLink('AdminCedShopeeProduct').'&created=1';
@@ -499,25 +494,26 @@ class AdminCedShopeeProductController extends ModuleAdminController
                 if (is_array($product_ids) && count($product_ids)) {
                     foreach ($product_ids as $product_id) {
                         $result = $CedShopeeProduct->updateInventory($product_id, array());
-                        if(isset($result['item'])){
+                        if (isset($result['item'])) {
                             $updated++;
-                        } else if(isset($result['error'])){
+                        } elseif (isset($result['error'])) {
                             $fail++;
                         }
                     }
                 }
                 if ($updated) {
-                    if($fail)
+                    if ($fail) {
                         $this->confirmations[] = $updated . ' Product(s) Updated and '.$fail . 'are failed to update ';
-                    else
+                    } else {
                         $this->confirmations[] = $updated . ' Product(s) Updated';
+                    }
                 } else {
                     $this->errors[] = 'Unable to update data.';
                 }
             } else {
                 $this->errors[] = 'Please Select Product to Update Inventory';
             }
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $CedShopeeLibrary->log(
                 'AdminCedShopeeBulkUploadProductController::updateStock',
                 'Exception',
@@ -543,7 +539,7 @@ class AdminCedShopeeProductController extends ModuleAdminController
                 if (is_array($product_ids) && count($product_ids)) {
                     foreach ($product_ids as $product_id) {
                         $result = $CedShopeeProduct->updatePrice($product_id, array());
-                        if(!isset($result['error'])){
+                        if (!isset($result['error'])) {
                             $updated++;
                         } else {
                             $fail++;
@@ -551,17 +547,18 @@ class AdminCedShopeeProductController extends ModuleAdminController
                     }
                 }
                 if ($updated) {
-                    if($fail)
+                    if ($fail) {
                         $this->confirmations[] = $updated . ' Product(s) Updated and '.$fail . 'are failed to update ';
-                    else
+                    } else {
                         $this->confirmations[] = $updated . ' Product(s) Updated';
+                    }
                 } else {
                     $this->errors[] = 'unable to update data.';
                 }
             } else {
                 $this->errors[] = 'Please Select Product to Update Price';
             }
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $CedShopeeLibrary->log(
                 'AdminCedShopeeBulkUploadProductController::updatePrice',
                 'Exception',
@@ -580,11 +577,9 @@ class AdminCedShopeeProductController extends ModuleAdminController
     {
         $CedShopeeLibrary = new CedShopeeLibrary;
         $CedShopeeProduct = new CedShopeeProduct;
-        try{
-            if (is_array($product_ids) && count($product_ids)) 
-            {
-                foreach ($product_ids as $product_id) 
-                {
+        try {
+            if (is_array($product_ids) && count($product_ids)) {
+                foreach ($product_ids as $product_id) {
                     $shopee_item_id = $CedShopeeProduct->getShopeeItemId($product_id);
                     $shopee_item_id = isset($shopee_item_id) ? $shopee_item_id : '0';
                     if (!empty($shopee_item_id)) {
@@ -598,7 +593,7 @@ class AdminCedShopeeProductController extends ModuleAdminController
                                     'shopee_status' => pSQL('Deleted')
                                     ),
                                 'product_id="'. (int) $product_id .'"'
-                                );
+                            );
                             $this->confirmations[] = 'Product Deleted Successfully';
                         } else {
                             $this->errors[] = $requestSent['msg'];
@@ -608,7 +603,7 @@ class AdminCedShopeeProductController extends ModuleAdminController
                     }
                 }
             }
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $CedShopeeLibrary->log(
                 'AdminCedShopeeProductController::Remove',
                 'Exception',

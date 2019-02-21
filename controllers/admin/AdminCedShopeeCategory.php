@@ -20,7 +20,7 @@ require_once _PS_MODULE_DIR_ . 'cedshopee/classes/CedShopeeLibrary.php';
 require_once _PS_MODULE_DIR_ . 'cedshopee/classes/CedShopeeCategory.php';
 class AdminCedShopeeCategoryController extends ModuleAdminController
 {
-	public function __construct()
+    public function __construct()
     {
         $this->db         = Db::getInstance();
         $this->bootstrap  = true;
@@ -45,7 +45,7 @@ class AdminCedShopeeCategoryController extends ModuleAdminController
             ),
         );
 
-        if (Tools::getIsset('method') && 
+        if (Tools::getIsset('method') &&
             (trim(Tools::getValue('method'))) == 'fetchCategory'
         ) {
             $this->fetchCategory();
@@ -65,7 +65,7 @@ class AdminCedShopeeCategoryController extends ModuleAdminController
         parent::initPageHeaderToolbar();
     }
 
-    public function fetchCategory() 
+    public function fetchCategory()
     {
         $CedshopeeLibrary = new CedshopeeLibrary;
         $response = $CedshopeeLibrary->postRequest('item/categories/get', array());
@@ -80,30 +80,30 @@ class AdminCedShopeeCategoryController extends ModuleAdminController
             } else {
                 $this->errors[] = 'No response from Shopee';
             }
-        } else if (isset($response['msg'])){
+        } elseif (isset($response['msg'])) {
             $this->errors[] = $response['msg'];
-        } else if (isset($response['error'])){
+        } elseif (isset($response['error'])) {
             $this->errors[] = $response['error'];
         } else {
             $this->errors[] = 'No response from Shopee';
         }
     }
 
-    public function addShopeeCategories($data) 
+    public function addShopeeCategories($data)
     {
         $this->db->Execute("DELETE FROM " . _DB_PREFIX_ . "cedshopee_category");
         $flag = 0;
         foreach ($data as $category) {
-            if(isset($category['category_id']) && $category['category_id']) {
+            if (isset($category['category_id']) && $category['category_id']) {
                 $query = $this->db->ExecuteS("SELECT `category_name` FROM " . _DB_PREFIX_ . "cedshopee_category WHERE category_id = '" . (int)$category['parent_id'] . "'");
              
-                if(!empty($query) && isset($query['0']['category_name'])) {
+                if (!empty($query) && isset($query['0']['category_name'])) {
                     $this->db->Execute("INSERT INTO " . _DB_PREFIX_ . "cedshopee_category SET category_id = '" . (int)$category['category_id'] . "', parent_id = '" . (int)$category['parent_id'] . "', has_children = '" . (int)$category['has_children'] . "', category_name = '" . pSQL($query['0']['category_name'].' > '.$category['category_name']) . "'");
                 } else {
                     $this->db->Execute("INSERT INTO " . _DB_PREFIX_ . "cedshopee_category SET category_id = '" . (int)$category['category_id'] . "', parent_id = '" . (int)$category['parent_id'] . "', has_children = '" . (int)$category['has_children'] . "', category_name = '" . pSQL($category['category_name']) . "'");
                 }
-            $flag ++;
-            } 
+                $flag ++;
+            }
         }
         return $flag;
     }

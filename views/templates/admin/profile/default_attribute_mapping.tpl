@@ -13,14 +13,14 @@
  * @copyright Copyright CEDCOMMERCE(http://cedcommerce.com/)
  * @license   http://cedcommerce.com/license-agreement.txt
  * @category  Ced
- * @package   CedManoMano
+ * @package   cedshopee
  */
 -->
 <div class="panel">
     <div class="panel-heading">
         <div class="row">
             <div class="col-sm-12">
-                <i class="icon-tag"></i> {l s='Default Attribute Mapping' mod='cedmanomano'}
+                <i class="icon-tag"></i> {l s='Default Attribute Mapping' mod='cedshopee'}
             </div>
         </div>
     </div>
@@ -29,10 +29,10 @@
             <div class="panel-heading">
                 <div class="row">
                     <div class="col-sm-12 col-lg-6 col-lg-6">
-                        {l s='Shopee Attribute' mod='cedmanomano'}
+                        {l s='Shopee Attribute' mod='cedshopee'}
                     </div>
                     <div class="col-sm-12 col-lg-6 col-lg-6">
-                        {l s='Store Attributes' mod='cedmanomano'}
+                        {l s='Store Attributes' mod='cedshopee'}
                     </div>
                 </div>
             </div>

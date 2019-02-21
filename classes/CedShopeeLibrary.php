@@ -26,7 +26,7 @@ class CedShopeeLibrary
         $this->signature = Configuration::get('CEDSHOPEE_SIGNATURE');
     }
 
-	/**
+    /**
      * @return bool
      */
     public function isEnabled()
@@ -38,7 +38,7 @@ class CedShopeeLibrary
         }
         return $flag;
     }
-	/**
+    /**
      * Post Request
      * $params = ['file' => "", 'data' => "" ]
      * @param string $url
@@ -61,11 +61,11 @@ class CedShopeeLibrary
                     'Content-Type: application/json',
                     'Authorization: '.$this->signature($url, $jsonBody),
                     'Host: '.$host,
-                    'Content-Length: '.strlen($jsonBody)
+                    'Content-Length: '.Tools::strlen($jsonBody)
                 );
                 $ch = curl_init();
                 curl_setopt($ch, CURLOPT_URL, $url);
-                curl_setopt($ch, CURLOPT_POST,       true);
+                curl_setopt($ch, CURLOPT_POST, true);
                 curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonBody);
                 curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
                 curl_setopt($ch, CURLOPT_HEADER, true);
@@ -73,7 +73,7 @@ class CedShopeeLibrary
                 $response = curl_exec($ch);
                 $servererror = curl_error($ch);
                 $header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
-                $body = substr($response, $header_size);
+                $body = Tools::substr($response, $header_size);
                 $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
                 $this->log('Headers');
                 $this->log($headers);
@@ -334,14 +334,13 @@ class CedShopeeLibrary
     public static function getShopeeCategories($data = array())
     {
         $db = Db::getInstance();
-        if(isset($data) && !empty($data['filter_name']))
-        {
+        if (isset($data) && !empty($data['filter_name'])) {
             $sql = "SELECT `category_id`,`category_name` FROM `" . _DB_PREFIX_ . "cedshopee_category` WHERE `category_name` LIKE '%" . pSQL($data['filter_name']) . "%' ORDER BY `category_name`";
             $result = $db->ExecuteS($sql);
         } else {
             $sql = "SELECT `category_id` FROM `" . _DB_PREFIX_ . "cedshopee_category` ORDER BY `category_name`";
             $result = $db->ExecuteS($sql);
-        } 
+        }
         if (is_array($result) && count($result)) {
             return $result;
         } else {
@@ -420,7 +419,7 @@ public function postRequest($url, $params = array())
                     'Content-Type: application/json',
                     'Authorization: '. $token,
                     'Host: '.$host,
-                    'Content-Length: '.strlen($jsonBody)
+                    'Content-Length: '.Tools::strlen($jsonBody)
                 );
                 $ch = curl_init();
                 curl_setopt($ch, CURLOPT_URL, $url);
@@ -432,7 +431,7 @@ public function postRequest($url, $params = array())
                 $response = curl_exec($ch);
                 $servererror = curl_error($ch);
                 $header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
-                $body = substr($response, $header_size);
+                $body = Tools::substr($response, $header_size);
                 $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
                 echo $response; die;
                 $this->log('Headers');

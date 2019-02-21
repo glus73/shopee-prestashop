@@ -24,10 +24,10 @@ include_once _PS_MODULE_DIR_ . 'cedshopee/classes/CedShopeeProfile.php';
 */
 class AdminCedShopeeProfileController extends ModuleAdminController
 {
-	
-	public function __construct()
-	{
-		$this->id_lang = Context::getContext()->language->id;
+    
+    public function __construct()
+    {
+        $this->id_lang = Context::getContext()->language->id;
         $this->bootstrap = true;
         $this->table = 'cedshopee_profile';
         $this->className = 'CedShopeeProfile';
@@ -66,9 +66,9 @@ class AdminCedShopeeProfileController extends ModuleAdminController
         if (Tools::getIsset('updated') && Tools::getValue('updated')) {
             $this->confirmations[] = "Profile updated successfully";
         }
-	}
+    }
 
-	public function profileStatus($value)
+    public function profileStatus($value)
     {
         $this->context->smarty->assign(array('status' => (string)$value));
         return $this->context->smarty->fetch(
@@ -108,9 +108,9 @@ class AdminCedShopeeProfileController extends ModuleAdminController
         parent::postProcess();
     }
 
-    public function initContent() 
+    public function initContent()
     {
-        if(Tools::getIsset('ajax') && Tools::getValue('ajax')) {
+        if (Tools::getIsset('ajax') && Tools::getValue('ajax')) {
             $this->ajax = true;
         }
         parent::initContent();
@@ -134,7 +134,7 @@ class AdminCedShopeeProfileController extends ModuleAdminController
 
     public function renderForm()
     {
-    	$db = Db::getInstance();
+        $db = Db::getInstance();
         $profileData = array();
         $general = array();
         $storeCategory = array();
@@ -302,18 +302,18 @@ class AdminCedShopeeProfileController extends ModuleAdminController
                             'cedshopee_profile',
                             array(
                                'title' => pSQL($title),
-	                           'store_category' => pSQL(json_encode($storeCategory)),
-	                           'shopee_categories' => pSQL(json_encode($shopee_categories)),
-	                           'shopee_category' => pSQL($shopee_category),
-	                           'profile_attribute_mapping' => pSQL(json_encode($profile_attribute_mapping)),
-	                           'status' => (int)$status,
-	                           'logistics' => pSQL(json_encode($logistics)),
-	                           'wholesale' => pSQL(json_encode($wholesale)),
-	                           'default_mapping' => pSQL(json_encode($default_mapping)),
-	                           'profile_store' => pSQL(json_encode($profile_store)),
-	                           'product_manufacturer' => pSQL(json_encode($product_manufacturer)),
+                               'store_category' => pSQL(json_encode($storeCategory)),
+                               'shopee_categories' => pSQL(json_encode($shopee_categories)),
+                               'shopee_category' => pSQL($shopee_category),
+                               'profile_attribute_mapping' => pSQL(json_encode($profile_attribute_mapping)),
+                               'status' => (int)$status,
+                               'logistics' => pSQL(json_encode($logistics)),
+                               'wholesale' => pSQL(json_encode($wholesale)),
+                               'default_mapping' => pSQL(json_encode($default_mapping)),
+                               'profile_store' => pSQL(json_encode($profile_store)),
+                               'product_manufacturer' => pSQL(json_encode($product_manufacturer)),
                                'profile_language' => (int)$profile_language,
-	                           'shopee_category_name' => pSQL($shopee_category_name)
+                               'shopee_category_name' => pSQL($shopee_category_name)
                             )
                         );
                         $newProfileId = $db->Insert_ID();
@@ -425,34 +425,33 @@ class AdminCedShopeeProfileController extends ModuleAdminController
     {
         $db = Db::getInstance();
         $result = Tools::getAllValues();
-    	$cedShopeeProfile = new cedShopeeProfile;
+        $cedShopeeProfile = new cedShopeeProfile;
         $profile_id = Tools::getValue('id');
         $category_id = Tools::getIsset('category_id')?Tools::getValue('category_id'):0;
         $profile_id = Tools::getIsset('profile_id')?Tools::getValue('profile_id'):0;
         $default_lang = (int)Configuration::get('PS_LANG_DEFAULT');
         $html ='No Attribute Found , Please checkCategory.';
         if ($category_id) {
-            ini_set('memory_limit','512M');
+            ini_set('memory_limit', '512M');
            
             $attributes_options = $cedShopeeProfile->getAttributesByCategory($category_id);
          
             $mapped_attributes_options = array();
             if ($profile_id) {
-               $mapped_attributes_options = $cedShopeeProfile->getMappedAttributes($profile_id); 
+                $mapped_attributes_options = $cedShopeeProfile->getMappedAttributes($profile_id);
             }
             // $results = $cedShopeeProfile->getAttributes();
-            $results = Feature::getFeatures($default_lang,true);
+            $results = Feature::getFeatures($default_lang, true);
             $store_options = $cedShopeeProfile->storeOptions();
             $options = $store_options['options'];
             $attributes = $cedShopeeProfile->getAttributesByCategory($category_id);
             $html ='';
             $required = array();
             foreach ($attributes as $attribute) {
-
                 $key = $attribute['attribute_id'];
                 $html .= '<tr>';
                 $html .= '<td class="col-sm-12 col-md-3 col-lg-3 left">';
-                if(isset($attribute['is_mandatory']) && $attribute['is_mandatory']){
+                if (isset($attribute['is_mandatory']) && $attribute['is_mandatory']) {
                     $required[] = $attribute['attribute_id'];
                     $html .= '<span class="required">*</span>';
                     $html .= '<input type="hidden" name="profile_attribute_mapping['.$key.'][is_mandatory]" value="1"/>';
@@ -468,35 +467,40 @@ class AdminCedShopeeProfileController extends ModuleAdminController
                 $default_values_selected = false;
                 $default_values_id_selected = false;
                 $shoppee_selected_option = false;
-                if(isset($mapped_attributes_options[$attribute['attribute_id']]) && isset($mapped_attributes_options[$attribute['attribute_id']]['option']) && isset($mapped_attributes_options[$attribute['attribute_id']]['option'])) {
+                if (isset($mapped_attributes_options[$attribute['attribute_id']]) && isset($mapped_attributes_options[$attribute['attribute_id']]['option']) && isset($mapped_attributes_options[$attribute['attribute_id']]['option'])) {
                     $mapped_options = $mapped_attributes_options[$attribute['attribute_id']]['option'];
 // echo '<pre>'; print_r($mapped_options); die;
-                    if(is_array($mapped_options) && !empty($mapped_options)){
+                    if (is_array($mapped_options) && !empty($mapped_options)) {
                         $mapped_options = array_filter($mapped_options);
                         $mapped_options = array_values($mapped_options);
                     }
                     
-                    if(isset($mapped_attributes_options[$attribute['attribute_id']]['store_attribute']) && $mapped_attributes_options[$attribute['attribute_id']]['store_attribute'])
+                    if (isset($mapped_attributes_options[$attribute['attribute_id']]['store_attribute']) && $mapped_attributes_options[$attribute['attribute_id']]['store_attribute']) {
                         $store_selected_option = $mapped_attributes_options[$attribute['attribute_id']]['store_attribute'];
+                    }
 
-                    if($mapped_attributes_options[$attribute['attribute_id']]['shopee_attribute'])
+                    if ($mapped_attributes_options[$attribute['attribute_id']]['shopee_attribute']) {
                         $shoppee_selected_option = $mapped_attributes_options[$attribute['attribute_id']]['shopee_attribute'];
+                    }
 
-                    if($mapped_attributes_options[$attribute['attribute_id']]['default_values'])
+                    if ($mapped_attributes_options[$attribute['attribute_id']]['default_values']) {
                         $default_values_selected = $mapped_attributes_options[$attribute['attribute_id']]['default_values'];
+                    }
 
-                    if($mapped_attributes_options[$attribute['attribute_id']]['default_value_id'])
+                    if ($mapped_attributes_options[$attribute['attribute_id']]['default_value_id']) {
                         $default_values_id_selected = $mapped_attributes_options[$attribute['attribute_id']]['default_value_id'];
+                    }
                 }
 
-                if(!$attribute['is_mandatory'])
-                $html .= '<option value=""></option>';
+                if (!$attribute['is_mandatory']) {
+                    $html .= '<option value=""></option>';
+                }
                 foreach ($attributes_options as $attribute_option) {
-                    if($shoppee_selected_option && ($attribute_option['attribute_id']==$shoppee_selected_option)) {
+                    if ($shoppee_selected_option && ($attribute_option['attribute_id']==$shoppee_selected_option)) {
                         $html .= '<option selected="selected" value="'.$attribute_option['attribute_id'].'">';
                         $html .= $attribute_option['attribute_name'];
                         $html .= '</option>';
-                    } else if($attribute['is_mandatory'] && ($attribute_option['attribute_id']==$attribute['attribute_id'])){
+                    } elseif ($attribute['is_mandatory'] && ($attribute_option['attribute_id']==$attribute['attribute_id'])) {
                         $html .= '<option selected="selected" value="'.$attribute_option['attribute_id'].'">';
                         $html .= $attribute_option['attribute_name'];
                         $html .= '</option>';
@@ -514,12 +518,12 @@ class AdminCedShopeeProfileController extends ModuleAdminController
                 $html .= '<input type="hidden" value="" class="text-left" name="profile_attribute_mapping['.$key.'][default_value_id]" value ="'.$default_values_id_selected.'" >';
                 $html .= '</td>';
                 $html .= '<td class="col-sm-12 col-md-3 col-lg-3 left">';
-                if ( ( $key != 9463) && in_array($attribute['input_type'], array('DROP_DOWN', 'COMBO_BOX'))) {
+                if (( $key != 9463) && in_array($attribute['input_type'], array('DROP_DOWN', 'COMBO_BOX'))) {
                     $html .= '<select id="profile_attribute_mapping['.$key.'][store_attribute]" name="profile_attribute_mapping['.$key.'][store_attribute]" class="col-sm-12 col-md-8 col-lg-8">';
                     $html .= '<option value="">Select Mapping</option>';
                     $html .= '<optgroup label="Store Option">';
                     foreach ($options as $option) {
-                        if($store_selected_option && ('option-'.$option['id_attribute_group']==$store_selected_option)) {
+                        if ($store_selected_option && ('option-'.$option['id_attribute_group']==$store_selected_option)) {
                             $html .= '<option show_option_mapping="1" selected="selected" value="option-'.$option['id_attribute_group'].'">';
                             $html .= $option['name'];
                             $html .= '</option>';
@@ -528,12 +532,11 @@ class AdminCedShopeeProfileController extends ModuleAdminController
                             $html .= $option['name'];
                             $html .= '</option>';
                         }
-
                     }
                     $html .= '</optgroup>';
                     $html .= '<optgroup label="Store Attributes">';
                     foreach ($results as $result) {
-                        if($store_selected_option && ('attribute-'.$result['id_feature']==$store_selected_option)) {
+                        if ($store_selected_option && ('attribute-'.$result['id_feature']==$store_selected_option)) {
                             $html .= '<option show_option_mapping="0" selected="selected" value="attribute-'.$result['id_feature'].'">';
                             $html .= $result['name'];
                             $html .= '</option>';
@@ -544,34 +547,36 @@ class AdminCedShopeeProfileController extends ModuleAdminController
                         }
                     }
                     $html .= '</optgroup>';
-                    $product_fields = array(); 
-                    try{
+                    $product_fields = array();
+                    try {
                         $columns = $db->executeS("SHOW COLUMNS FROM `"._DB_PREFIX_."product`;");
-                        if(isset($columns) && count($columns)) {
+                        if (isset($columns) && count($columns)) {
                             $product_fields = $columns;
                         }
-                        $this->array_sort_by_column($product_fields, 'Field');
-                    }catch(Exception $e){
-                        echo $e->getMessage();die;
+                        $this->arraySoryByColumn($product_fields, 'Field');
+                    } catch (Exception $e) {
+                        echo $e->getMessage();
+                        die;
                     }
                    
                     $html .= '<optgroup label="Product Fields">';
                     foreach ($product_fields as $result) {
                         $show_option_mapping = 0 ;
-                        if(in_array($result['Field'],array('manufacturer_id')))
+                        if (in_array($result['Field'], array('manufacturer_id'))) {
                             $show_option_mapping = 1 ;
-                        if($store_selected_option && ('product-'.$result['Field']==$store_selected_option)) {
+                        }
+                        if ($store_selected_option && ('product-'.$result['Field']==$store_selected_option)) {
                             $html .= '<option show_option_mapping="'.$show_option_mapping.'" selected="selected" value="product-'.$result['Field'].'">';
-                            $html .= ucfirst(str_replace('_', ' ', $result['Field']));
+                            $html .= Tools::ucfirst(str_replace('_', ' ', $result['Field']));
                             $html .= '</option>';
                         } else {
                             $html .= '<option show_option_mapping="'.$show_option_mapping.'" value="product-'.$result['Field'].'">';
-                            $html .= ucfirst(str_replace('_', ' ', $result['Field']));
+                            $html .= Tools::ucfirst(str_replace('_', ' ', $result['Field']));
                             $html .= '</option>';
                         }
                     }
                     $html .= '</optgroup>';
-                    $html .= '</select>';                  
+                    $html .= '</select>';
                     $option_html = '';
                     $option_html .= '<a style="margin-left:1%; text-weight:bold;" class="center button" onclick="toggleOptions(' . $key . ')"> Map Option(s) </a><div style="display:none;" id="panel' . $key . '">';
                     $option_html .= '<table class="table table-bordered" id="option_mapping' . $key . '">';
@@ -598,8 +603,7 @@ class AdminCedShopeeProfileController extends ModuleAdminController
                     $option_html .= '</td>';
                     $option_html .= '</tr>';
                     $option_html .= '</thead>';
-                    if(!empty($mapped_options))
-                    {
+                    if (!empty($mapped_options)) {
                         foreach ($mapped_options as $key_p => $value) {
                             $option_html .= '<tr id="attribute-row'.$key.$key_p.'">';
                             $option_html .= '<td>';
@@ -613,7 +617,7 @@ class AdminCedShopeeProfileController extends ModuleAdminController
                             $option_html .= '<a type="button" onclick="$(\'#attribute-row'.$key.$key_p.'\').remove();" class="btn btn-danger pull-right"> Remove</a>';
                             $option_html .= '</td>';
                             $option_html .= '</tr>';
-                        } 
+                        }
                     }
                     $option_html .= '</table>';
                     $option_html .= '</div>';
@@ -630,7 +634,7 @@ class AdminCedShopeeProfileController extends ModuleAdminController
             }
             die($html);
         } else {
-        	die($html);
+            die($html);
         }
     }
 
@@ -640,22 +644,22 @@ class AdminCedShopeeProfileController extends ModuleAdminController
         $CedShopeeProfile = new CedShopeeProfile;
         $data = Tools::getAllValues();
         if (isset($data['filter_name']) && !empty($data['filter_name']) && isset($data['attribute_group_id']) && !empty($data['attribute_group_id']) && isset($data['catId']) && !empty($data['catId'])) {
-            $attribute_group_id = $data['attribute_group_id']; 
-            $type_array = explode('-', $attribute_group_id );
-            if (isset($type_array['0']) && ($type_array['0']=='product')){
+            $attribute_group_id = $data['attribute_group_id'];
+            $type_array = explode('-', $attribute_group_id);
+            if (isset($type_array['0']) && ($type_array['0']=='product')) {
                 // Manufacturer::getManufacturers(false, 0, true, false, false, false, true);
                 $returnResponse = $CedShopeeProfile->getManufacturers(array('filter_name' => $data['filter_name']));
-            } else if (isset($type_array['0']) && ($type_array['0']=='option')){
-                $returnResponse = $CedShopeeProfile->getStoreOptions($data['catId'],$type_array['1'], $data['filter_name']);
+            } elseif (isset($type_array['0']) && ($type_array['0']=='option')) {
+                $returnResponse = $CedShopeeProfile->getStoreOptions($data['catId'], $type_array['1'], $data['filter_name']);
             }
         }
         die(json_encode($returnResponse));
     }
 
-    public function array_sort_by_column(&$arr, $col, $dir = SORT_ASC) 
+    public function arraySoryByColumn(&$arr, $col, $dir = SORT_ASC)
     {
         $sort_col = array();
-        foreach ($arr as $key=> $row) {
+        foreach ($arr as $key => $row) {
             $sort_col[$key] = $row[$col];
         }
         array_multisort($sort_col, $dir, $arr);
@@ -687,8 +691,8 @@ class AdminCedShopeeProfileController extends ModuleAdminController
         $returnResponse = array();
         $data = Tools::getAllValues();
         if (isset($data['filter_name']) && !empty($data['filter_name']) && isset($data['attribute_id']) && !empty($data['attribute_id']) && isset($data['catId']) && !empty($data['catId'])) {
-            $attribute_id = $data['attribute_id']; 
-            $returnResponse = $CedShopeeProfile->getBrands($data['catId'],$attribute_id, $data['filter_name']);
+            $attribute_id = $data['attribute_id'];
+            $returnResponse = $CedShopeeProfile->getBrands($data['catId'], $attribute_id, $data['filter_name']);
         }
         die(json_encode($returnResponse));
     }

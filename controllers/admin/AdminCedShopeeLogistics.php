@@ -21,17 +21,17 @@ require_once _PS_MODULE_DIR_ . 'cedshopee/classes/CedShopeeLogistics.php';
 
 class AdminCedShopeeLogisticsController extends ModuleAdminController
 {
-	public function __construct()
+    public function __construct()
     {
-    	$this->db         = Db::getInstance();
+        $this->db         = Db::getInstance();
         $this->bootstrap  = true;
         $this->table      = 'cedshopee_logistics';
         $this->identifier = 'logistic_id';
         $this->list_no_link = true;
 
         $this->bulk_actions = array(
-        	'remove' => array(
-                'text' => 'Delete Logistics', 
+            'remove' => array(
+                'text' => 'Delete Logistics',
                 'icon' => 'icon-trash'
             ),
         );
@@ -57,7 +57,7 @@ class AdminCedShopeeLogisticsController extends ModuleAdminController
             ),
         );
         
-        if (Tools::getIsset('method') && 
+        if (Tools::getIsset('method') &&
             (trim(Tools::getValue('method'))) == 'fetchLogistics'
         ) {
             $this->fetchLogistics();
@@ -92,9 +92,9 @@ class AdminCedShopeeLogisticsController extends ModuleAdminController
 
     public function postProcess()
     {
-        if(Tools::getIsset('delete_logistics') && Tools::getValue('delete_logistics')) {
+        if (Tools::getIsset('delete_logistics') && Tools::getValue('delete_logistics')) {
             $res = $this->db->Execute("TRUNCATE TABLE " . _DB_PREFIX_ . "cedshopee_logistics");
-            if($res) {
+            if ($res) {
                 $this->confirmations[] = "Logistic Deleted Successfully";
             } else {
                 $this->errors[] = "Failed To Delete Logistic";
@@ -103,25 +103,22 @@ class AdminCedShopeeLogisticsController extends ModuleAdminController
         return parent::postProcess();
     }
 
-    public function fetchLogistics() 
+    public function fetchLogistics()
     {
-    	$CedShopeeLibrary = new CedShopeeLibrary;
-    	$response = $CedShopeeLibrary->postRequest('logistics/channel/get', array());
-    	if (!isset($response['error'])) 
-    	{
-    		if (isset($response['logistics']) && !empty($response['logistics'])) 
-    		{
-    			$logiResponse = $this->addShopeeLogistic($response['logistics']);
-    			if (isset($logiResponse) && $logiResponse) 
-    			{
+        $CedShopeeLibrary = new CedShopeeLibrary;
+        $response = $CedShopeeLibrary->postRequest('logistics/channel/get', array());
+        if (!isset($response['error'])) {
+            if (isset($response['logistics']) && !empty($response['logistics'])) {
+                $logiResponse = $this->addShopeeLogistic($response['logistics']);
+                if (isset($logiResponse) && $logiResponse) {
                     $this->confirmations[] = 'Logistics fetched successfully';
                 } else {
                     $this->errors[] = 'Error while fetching logistics';
                 }
-    		} else {
+            } else {
                 $this->errors[] = 'No response from Shopee';
             }
-    	} elseif (!empty($response['error'])) {
+        } elseif (!empty($response['error'])) {
             $this->errors[] = $response['error'];
         } elseif (!empty($response['msg'])) {
             $this->errors[] = $response['msg'];
@@ -130,44 +127,42 @@ class AdminCedShopeeLogisticsController extends ModuleAdminController
         }
     }
 
-    public function addShopeeLogistic($data = array()) 
+    public function addShopeeLogistic($data = array())
     {
-    	$this->db->Execute("TRUNCATE TABLE " . _DB_PREFIX_ . "cedshopee_logistics");
-    	$flag = 0;
-    	foreach($data as $logistic) 
-    	{
-    		if(isset($logistic['logistic_id']) && $logistic['logistic_id']) 
-    		{
-    			$this->db->insert(
-    			'cedshopee_logistics',
-    			array(
-    				'logistic_id' => (int)$logistic['logistic_id'],
-    				'logistic_name' => pSQL($logistic['logistic_name']),
-    				'has_cod' => (int)$logistic['has_cod'],
-    				'enabled' => (int)$logistic['enabled'],
-    				'fee_type' => pSQL($logistic['fee_type']),
-    				'sizes' => pSQL(json_encode($logistic['sizes'])),
-    				'weight_limits' => pSQL(json_encode($logistic['weight_limits'])),
-    				'item_max_dimension' => pSQL(json_encode($logistic['item_max_dimension']))
-    				
-    				)
-    			);
-    		   $flag++;
-    		} 
-    	}
-    	return $flag;
+        $this->db->Execute("TRUNCATE TABLE " . _DB_PREFIX_ . "cedshopee_logistics");
+        $flag = 0;
+        foreach ($data as $logistic) {
+            if (isset($logistic['logistic_id']) && $logistic['logistic_id']) {
+                $this->db->insert(
+                    'cedshopee_logistics',
+                    array(
+                    'logistic_id' => (int)$logistic['logistic_id'],
+                    'logistic_name' => pSQL($logistic['logistic_name']),
+                    'has_cod' => (int)$logistic['has_cod'],
+                    'enabled' => (int)$logistic['enabled'],
+                    'fee_type' => pSQL($logistic['fee_type']),
+                    'sizes' => pSQL(json_encode($logistic['sizes'])),
+                    'weight_limits' => pSQL(json_encode($logistic['weight_limits'])),
+                    'item_max_dimension' => pSQL(json_encode($logistic['item_max_dimension']))
+                    
+                    )
+                );
+                $flag++;
+            }
+        }
+        return $flag;
     }
 
-    public function processBulkRemove() 
+    public function processBulkRemove()
     {
-    	$logistic_ids = Tools::getValue('cedshopee_logisticsBox');
-    	if (!empty($logistic_ids)) {
-    		foreach($logistic_ids as $logistic_id) {
-    			$this->db->Execute("DELETE FROM " . _DB_PREFIX_ . "cedshopee_logistics WHERE `logistic_id` = '". (int)$logistic_id ."' ");
-    			$this->confirmations[] = 'Logistic' . $logistic_id . 'data deleted successfully!';
-    		}
-    	} else {
-    		$this->errors[] = 'Please Select Logistics';
-    	}
+        $logistic_ids = Tools::getValue('cedshopee_logisticsBox');
+        if (!empty($logistic_ids)) {
+            foreach ($logistic_ids as $logistic_id) {
+                $this->db->Execute("DELETE FROM " . _DB_PREFIX_ . "cedshopee_logistics WHERE `logistic_id` = '". (int)$logistic_id ."' ");
+                $this->confirmations[] = 'Logistic' . $logistic_id . 'data deleted successfully!';
+            }
+        } else {
+            $this->errors[] = 'Please Select Logistics';
+        }
     }
 }

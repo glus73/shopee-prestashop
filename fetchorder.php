@@ -53,5 +53,6 @@ try {
         array(
             'success' => false,
             'message' => $e->getMessage()
-        )));
+        )
+    ));
 }

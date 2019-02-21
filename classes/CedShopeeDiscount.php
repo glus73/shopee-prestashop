@@ -18,7 +18,7 @@
 
 class CedShopeeDiscount extends ObjectModel
 {
-	public static $definition = array(
+    public static $definition = array(
         'table'     => 'cedshopee_discount',
         'primary'   => 'id',
         'fields'    => array(
@@ -54,18 +54,17 @@ class CedShopeeDiscount extends ObjectModel
         return $response;
     }
 
-    public static function getShopeeItems($data = array()) 
+    public static function getShopeeItems($data = array())
     {
         $db = Db::getInstance();
-        if(isset($data) && !empty($data['filter_name']))
-        {
+        if (isset($data) && !empty($data['filter_name'])) {
             $sql = "SELECT cpp.`shopee_item_id`, pl.`name` FROM `"._DB_PREFIX_."cedshopee_profile_products` AS cpp LEFT JOIN `"._DB_PREFIX_."product_lang` AS pl ON(pl.id_product = cpp.product_id) WHERE pl.`name` LIKE '%". $data['filter_name'] ."%' ORDER BY pl.`name` ";
             $result = $db->executeS($sql);
         } else {
             $sql = "SELECT cpp.`shopee_item_id`, pl.`name` FROM `"._DB_PREFIX_."cedshopee_profile_products` AS cpp LEFT JOIN `"._DB_PREFIX_."product_lang` AS pl ON(pl.id_product = cpp.product_id) WHERE cpp.`shopee_item_id` > '0' AND pl.`id_lang` = '". (int) Context::getContext()->language->id."' ORDER BY pl.`name` ";
             $result = $db->executeS($sql);
         }
-        if(isset($result) && !empty($result)) {
+        if (isset($result) && !empty($result)) {
             return $result;
         } else {
             return array();

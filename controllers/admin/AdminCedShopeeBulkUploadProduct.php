@@ -21,7 +21,7 @@ require_once _PS_MODULE_DIR_ . 'cedshopee/classes/CedShopeeProduct.php';
 
 class AdminCedShopeeBulkUploadProductController extends ModuleAdminController
 {
-	public function __construct()
+    public function __construct()
     {
         $this->bootstrap = true;
         parent::__construct();
@@ -58,49 +58,47 @@ class AdminCedShopeeBulkUploadProductController extends ModuleAdminController
 
     public function ajaxProcessBulkUpload()
     {
-    	$CedShopeeLibrary = new CedShopeeLibrary;
-    	$CedShopeeProduct = new CedShopeeProduct;
-    	try 
-    	{
-	        if (is_array(Tools::getValue('selected')) && count(Tools::getValue('selected'))) 
-	        {
-	            $product_ids = Tools::getValue('selected');
-	            $errors = array();
-	            $successes = array();
-	            //foreach ($ids as $id) {
-	                $response = $CedShopeeProduct->uploadProducts($product_ids);
-	                
-	                if (isset($response) && is_array($response)) {
-	                	if (isset($response['success']) && $response['success'] == true) {
-	                		$successes[] = $response['message'].'<br>';
-	                	} else {
-	                		$errors[] = $response['message'];
-	                	}
-	                    // foreach ($response as $rep) {
-	                    //     if (isset($rep['success']) && $rep['success'] == true) {
-	                    //         $successes[] = $rep['message'].'<br>';
-	                    //     } elseif (isset($rep['error']) && is_array($rep['error'])) {
-	                    //         foreach ($rep['error'] as $err) {
-	                    //             $errors[] = $err;
-	                    //         }
-	                    //     } else {
-	                    //         $errors[] = $rep['message'];
-	                    //     }
-	                    // }
-	                }
-	            //}
-	            die(json_encode(
-	                array(
-	                   'status' => true,
-	                   'response' => array(
-	                       'success' => $successes,
-	                       'errors' => $errors,
-	                   )
-	                )
-	            ));
-	        }
-        } catch(\Exception $e) {
-        	$CedShopeeLibrary->log(
+        $CedShopeeLibrary = new CedShopeeLibrary;
+        $CedShopeeProduct = new CedShopeeProduct;
+        try {
+            if (is_array(Tools::getValue('selected')) && count(Tools::getValue('selected'))) {
+                $product_ids = Tools::getValue('selected');
+                $errors = array();
+                $successes = array();
+                //foreach ($ids as $id) {
+                    $response = $CedShopeeProduct->uploadProducts($product_ids);
+                    
+                if (isset($response) && is_array($response)) {
+                    if (isset($response['success']) && $response['success'] == true) {
+                        $successes[] = $response['message'].'<br>';
+                    } else {
+                        $errors[] = $response['message'];
+                    }
+                    // foreach ($response as $rep) {
+                    //     if (isset($rep['success']) && $rep['success'] == true) {
+                    //         $successes[] = $rep['message'].'<br>';
+                    //     } elseif (isset($rep['error']) && is_array($rep['error'])) {
+                    //         foreach ($rep['error'] as $err) {
+                    //             $errors[] = $err;
+                    //         }
+                    //     } else {
+                    //         $errors[] = $rep['message'];
+                    //     }
+                    // }
+                }
+                //}
+                die(json_encode(
+                    array(
+                       'status' => true,
+                       'response' => array(
+                           'success' => $successes,
+                           'errors' => $errors,
+                       )
+                    )
+                ));
+            }
+        } catch (\Exception $e) {
+            $CedShopeeLibrary->log(
                 'AdminCedShopeeBulkUploadProductController::UploadAll',
                 'Exception',
                 $e->getMessage(),

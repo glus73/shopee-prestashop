@@ -28,60 +28,60 @@ if (!Tools::isSubmit('secure_key')
 }
 
 try {
-	    $CedShopeeLibrary = new CedShopeeLibrary;
+        $CedShopeeLibrary = new CedShopeeLibrary;
         $CedShopeeProduct = new CedShopeeProduct;
 
         $db = Db::getInstance();
 
         $product_ids = array();
 
-	    $res = $db->executeS("SELECT `product_id` FROM `"._DB_PREFIX_."cedshopee_profile_products`");
-	    if (isset($res) && !empty($res) && is_array($res)) {
-	        foreach ($res as $id) {
-	            $product_ids[] = $id['product_id'];
-	        }
-	    }
-	    if (!empty($product_ids)) {
-	        $product_ids = array_unique($product_ids);
-	    }
-
-        if (is_array($product_ids) && count($product_ids)) {
-            $errors = array();
-            $successes = array();
-            $response = $CedShopeeProduct->uploadProducts($product_ids);
-                    
-            if (isset($response) && is_array($response)) {
-                if (isset($response['success']) && $response['success'] == true) {
-                    $successes[] = $response['message'].'<br>';
-                } else {
-                    $errors[] = $response['message'];
-                }
-            }
-            die(json_encode(
-                array(
-                   'status' => true,
-                   'response' => array(
-                       'success' => $successes,
-                       'errors' => $errors,
-                   )
-                )
-            ));
-        }  else {
-            die(json_encode(array(
-                    'status' => false,
-                    'message' => 'Please Select Product to Upload Product'
-                )));
+        $res = $db->executeS("SELECT `product_id` FROM `"._DB_PREFIX_."cedshopee_profile_products`");
+    if (isset($res) && !empty($res) && is_array($res)) {
+        foreach ($res as $id) {
+            $product_ids[] = $id['product_id'];
         }
-    } catch(\Exception $e) {
-        $CedShopeeLibrary->log(
-            'Cron uploadProduct',
-            'Exception',
-            $e->getMessage(),
-            $e->getMessage(),
-            true
-        );
-        die(json_encode(array(
-            'status' => false,
-            'message' => $e->getMessage()
-        )));
     }
+    if (!empty($product_ids)) {
+        $product_ids = array_unique($product_ids);
+    }
+
+    if (is_array($product_ids) && count($product_ids)) {
+        $errors = array();
+        $successes = array();
+        $response = $CedShopeeProduct->uploadProducts($product_ids);
+                    
+        if (isset($response) && is_array($response)) {
+            if (isset($response['success']) && $response['success'] == true) {
+                $successes[] = $response['message'].'<br>';
+            } else {
+                $errors[] = $response['message'];
+            }
+        }
+        die(json_encode(
+            array(
+               'status' => true,
+               'response' => array(
+                   'success' => $successes,
+                   'errors' => $errors,
+               )
+            )
+        ));
+    } else {
+        die(json_encode(array(
+                'status' => false,
+                'message' => 'Please Select Product to Upload Product'
+            )));
+    }
+} catch (\Exception $e) {
+    $CedShopeeLibrary->log(
+        'Cron uploadProduct',
+        'Exception',
+        $e->getMessage(),
+        $e->getMessage(),
+        true
+    );
+    die(json_encode(array(
+        'status' => false,
+        'message' => $e->getMessage()
+    )));
+}

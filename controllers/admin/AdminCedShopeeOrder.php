@@ -21,8 +21,8 @@ include_once  _PS_MODULE_DIR_.'cedshopee/classes/CedShopeeLibrary.php';
 
 class AdminCedShopeeOrderController extends ModuleAdminController
 {
-	public function __construct()
-	{
+    public function __construct()
+    {
              $this->db = Db::getInstance();
              $this->bootstrap = true;
              $this->table = 'order';
@@ -33,11 +33,11 @@ class AdminCedShopeeOrderController extends ModuleAdminController
              // $this->addRowAction('edit');
              $this->bulk_actions = array(
                 // 'accept' => array(
-                //     'text' => 'Accept Order', 
+                //     'text' => 'Accept Order',
                 //     'icon' => 'icon-refresh'
                 //     ),
                 'cancel' => array(
-                    'text' => 'Cancel Order', 
+                    'text' => 'Cancel Order',
                     'icon' => 'icon-refresh'
                     ),
             );
@@ -75,9 +75,9 @@ class AdminCedShopeeOrderController extends ModuleAdminController
                 $this->_use_found_rows = true;
 
                 $statuses = OrderState::getOrderStates((int)$this->context->language->id);
-                foreach ($statuses as $status) {
-                    $this->statuses_array[$status['id_order_state']] = $status['name'];
-                }
+        foreach ($statuses as $status) {
+            $this->statuses_array[$status['id_order_state']] = $status['name'];
+        }
 
                 $this->fields_list = array(
                     'id_order' => array(
@@ -138,9 +138,9 @@ class AdminCedShopeeOrderController extends ModuleAdminController
                 ORDER BY cl.name ASC');
 
                 $country_array = array();
-                foreach ($result as $row) {
-                    $country_array[$row['id_country']] = $row['name'];
-                }
+        foreach ($result as $row) {
+            $country_array[$row['id_country']] = $row['name'];
+        }
 
                 $part1 = array_slice($this->fields_list, 0, 3);
                 $part2 = array_slice($this->fields_list, 3);
@@ -156,12 +156,12 @@ class AdminCedShopeeOrderController extends ModuleAdminController
                 $this->shopLinkType = 'shop';
                 $this->shopShareDatas = Shop::SHARE_ORDER;
 
-                if (Tools::isSubmit('id_order')) {
-                    $order = new Order((int)Tools::getValue('id_order'));
-                    $this->context->cart = new Cart($order->id_cart);
-                    $this->context->customer = new Customer($order->id_customer);
-                }
-	}
+        if (Tools::isSubmit('id_order')) {
+            $order = new Order((int)Tools::getValue('id_order'));
+            $this->context->cart = new Cart($order->id_cart);
+            $this->context->customer = new Customer($order->id_customer);
+        }
+    }
 
     public function initPageHeaderToolbar()
     {
@@ -197,7 +197,7 @@ class AdminCedShopeeOrderController extends ModuleAdminController
     }
 
     public function renderView()
-    { 
+    {
         $order = $this->loadObject();
         $order_data = (array)$order;
         $id_order = 0;
@@ -226,21 +226,19 @@ class AdminCedShopeeOrderController extends ModuleAdminController
                         
                         $this->context->smarty->assign(array('shippingInfo'  => $shippingInfo));
                         $order_info = array();
-                        foreach($order_data as $key => $value)
-                        {
-                                foreach($value as $key1 => $val)
-                                {
-                                    $order_info[] = array(
-                                            'order_id' => $val['ordersn'],
-                                            'order_status' => $val['order_status'],
-                                            'tracking_no' => $val['tracking_no'],
-                                            'payment_method' => $val['payment_method'],
-                                            'country' => $val['country'],
-                                            'currency' => $val['currency'],
-                                            'days_to_ship' => $val['days_to_ship'],
-                                            'order_total' => $val['escrow_amount']
-                                            );    
-                                }   
+                        foreach ($order_data as $key => $value) {
+                            foreach ($value as $key1 => $val) {
+                                $order_info[] = array(
+                                        'order_id' => $val['ordersn'],
+                                        'order_status' => $val['order_status'],
+                                        'tracking_no' => $val['tracking_no'],
+                                        'payment_method' => $val['payment_method'],
+                                        'country' => $val['country'],
+                                        'currency' => $val['currency'],
+                                        'days_to_ship' => $val['days_to_ship'],
+                                        'order_total' => $val['escrow_amount']
+                                        );
+                            }
                         }
                         if ($order_info) {
                                 $this->context->smarty->assign(array('order_info'  => $order_info));
@@ -270,11 +268,11 @@ class AdminCedShopeeOrderController extends ModuleAdminController
         }
     }
 
-   public static function setOrderCurrency($echo, $tr)
-   {
-      $order = new Order($tr['id_order']);
-      return Tools::displayPrice($echo, (int)$order->id_currency);
-   }
+    public static function setOrderCurrency($echo, $tr)
+    {
+        $order = new Order($tr['id_order']);
+        return Tools::displayPrice($echo, (int)$order->id_currency);
+    }
 
    // public function processBulkAccept()
    //  {
@@ -286,7 +284,7 @@ class AdminCedShopeeOrderController extends ModuleAdminController
    //              foreach ($order_ids as $order_id) {
    //                  if ($order_id) {
    //                      $shopeeOrderId = $this->db->getValue(
-   //                          'SELECT `shopee_order_id` FROM `'._DB_PREFIX_.'cedshopee_order_error` 
+   //                          'SELECT `shopee_order_id` FROM `'._DB_PREFIX_.'cedshopee_order_error`
    //                          WHERE `id`="'.(int)($order_id).'"'
    //                      );
    //                      $params = array(

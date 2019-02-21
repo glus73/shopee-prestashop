@@ -153,7 +153,7 @@ function validateresult(result) {
 <div id="myNav" class="overlay">
   <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
   <div class="overlay-content">
-    <img class="cedshopee-loading fa fa-spinner" style="margin-left:2px" src='{$base_url|escape:'htmlall':'UTF-8'}modules/cedshopee/views/images/cedshopee_loader.gif'>
+    <img class="cedshopee-loading fa fa-spinner" style="margin-left:2px" src='{$base_url|escape:'htmlall':'UTF-8'}modules/cedshopee/views/img/cedshopee_loader.gif'>
   </div>
 </div>
 <script>

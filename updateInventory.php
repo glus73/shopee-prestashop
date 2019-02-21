@@ -28,70 +28,70 @@ if (!Tools::isSubmit('secure_key')
 }
 
 try {
-	    $CedShopeeLibrary = new CedShopeeLibrary;
+        $CedShopeeLibrary = new CedShopeeLibrary;
         $CedShopeeProduct = new CedShopeeProduct;
 
         $db = Db::getInstance();
 
         $product_ids = array();
 
-	    $res = $db->executeS("SELECT `product_id` FROM `"._DB_PREFIX_."cedshopee_profile_products`");
-	    if (isset($res) && !empty($res) && is_array($res)) {
-	        foreach ($res as $id) {
-	            $product_ids[] = $id['product_id'];
-	        }
-	    }
-	    if (!empty($product_ids)) {
-	        $product_ids = array_unique($product_ids);
-	    }
+        $res = $db->executeS("SELECT `product_id` FROM `"._DB_PREFIX_."cedshopee_profile_products`");
+    if (isset($res) && !empty($res) && is_array($res)) {
+        foreach ($res as $id) {
+            $product_ids[] = $id['product_id'];
+        }
+    }
+    if (!empty($product_ids)) {
+        $product_ids = array_unique($product_ids);
+    }
 
-        if (is_array($product_ids) && count($product_ids)) {
-            $updated = 0;
-            $fail = 0;
+    if (is_array($product_ids) && count($product_ids)) {
+        $updated = 0;
+        $fail = 0;
 
-            foreach ($product_ids as $product_id) {
-                $result = $CedShopeeProduct->updateInventory($product_id, array());
-                if(isset($result['item'])){
-                    $updated++;
-                } else if(isset($result['error'])){
-                    $fail++;
-                }
+        foreach ($product_ids as $product_id) {
+            $result = $CedShopeeProduct->updateInventory($product_id, array());
+            if (isset($result['item'])) {
+                $updated++;
+            } elseif (isset($result['error'])) {
+                $fail++;
             }
+        }
             
-            if ($updated) {
-                if($fail) {
-                	die(json_encode(array(
-			            'status' => true,
-			            'message' => $updated . ' Product(s) Updated and '.$fail . 'are failed to update '
-			        )));
-                } else {
-                	die(json_encode(array(
-			            'status' => true,
-			            'message' => $updated . ' Product(s) Updated'
-			        )));
-                }
+        if ($updated) {
+            if ($fail) {
+                die(json_encode(array(
+                    'status' => true,
+                    'message' => $updated . ' Product(s) Updated and '.$fail . 'are failed to update '
+                )));
             } else {
-            	die(json_encode(array(
-			            'status' => false,
-			            'message' => 'Unable to update data.'
-			        )));
+                die(json_encode(array(
+                    'status' => true,
+                    'message' => $updated . ' Product(s) Updated'
+                )));
             }
-        }  else {
+        } else {
             die(json_encode(array(
                     'status' => false,
-                    'message' => 'Please Select Product to Update Inventory'
+                    'message' => 'Unable to update data.'
                 )));
         }
-    } catch(\Exception $e) {
-        $CedShopeeLibrary->log(
-            'Cron updateInventory',
-            'Exception',
-            $e->getMessage(),
-            $e->getMessage(),
-            true
-        );
+    } else {
         die(json_encode(array(
-            'status' => false,
-            'message' => $e->getMessage()
-        )));
+                'status' => false,
+                'message' => 'Please Select Product to Update Inventory'
+            )));
     }
+} catch (\Exception $e) {
+    $CedShopeeLibrary->log(
+        'Cron updateInventory',
+        'Exception',
+        $e->getMessage(),
+        $e->getMessage(),
+        true
+    );
+    die(json_encode(array(
+        'status' => false,
+        'message' => $e->getMessage()
+    )));
+}
