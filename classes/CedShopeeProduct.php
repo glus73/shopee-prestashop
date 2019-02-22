@@ -144,7 +144,7 @@ class CedShopeeProduct
                             $productToUpload['wholesales'] = (array) array($wholesales);
                         }
 
-                        $result = $db->executeS("SELECT shopee_item_id FROM `"._DB_PREFIX_."cedshopee_uploaded_products` WHERE product_id='".$product_id."'");
+                        $result = $db->executeS("SELECT shopee_item_id FROM `"._DB_PREFIX_."cedshopee_uploaded_products` WHERE product_id='".(int)$product_id."'");
 
                         $productToUpload['item_id'] = isset($result['shopee_item_id']) ? (int)$result['shopee_item_id'] : '0';
 
@@ -188,7 +188,7 @@ class CedShopeeProduct
                                                 $sku= $variation['variation_sku'];
                                                 ;
 
-                                                $product_option_value_query = $db->executeS("SELECT id, variation_id FROM `" . _DB_PREFIX_ . "cedshopee_product_variations` WHERE variation_sku = '".$sku."' AND product_id='".$product_id."'");
+                                                $product_option_value_query = $db->executeS("SELECT id, variation_id FROM `" . _DB_PREFIX_ . "cedshopee_product_variations` WHERE variation_sku = '".pSQL($sku)."' AND product_id='".(int)$product_id."'");
 
                                                 if (isset($product_option_value_query) && count($product_option_value_query)) {
                                                     $db->update(
@@ -251,7 +251,7 @@ class CedShopeeProduct
                                                 $sku= $variation['variation_sku'];
                                                 ;
 
-                                                $product_option_value_query = $db->executeS("SELECT id, variation_id FROM `" . _DB_PREFIX_ . "cedshopee_product_variations` where variation_sku = '".$sku."' AND product_id='".$product_id."'");
+                                                $product_option_value_query = $db->executeS("SELECT id, variation_id FROM `" . _DB_PREFIX_ . "cedshopee_product_variations` where variation_sku = '".pSQL($sku)."' AND product_id='".(int)$product_id."'");
 
                                                 if (isset($product_option_value_query) && count($product_option_value_query)) {
                                                     $db->update(
@@ -304,7 +304,7 @@ class CedShopeeProduct
     public function getProfileByProductId($product_id)
     {
         if ($product_id) {
-            $result = Db::getInstance()->executeS("SELECT * FROM `" . _DB_PREFIX_ . "cedshopee_profile` cp LEFT JOIN `" . _DB_PREFIX_ . "cedshopee_profile_products` cpp on (cp.id = cpp.shopee_profile_id) WHERE cpp.product_id='" . $product_id . "'");
+            $result = Db::getInstance()->executeS("SELECT * FROM `" . _DB_PREFIX_ . "cedshopee_profile` cp LEFT JOIN `" . _DB_PREFIX_ . "cedshopee_profile_products` cpp on (cp.id = cpp.shopee_profile_id) WHERE cpp.product_id='" . (int)$product_id . "'");
             if (isset($result) && count($result)) {
                 return $result;
             } else {
@@ -433,7 +433,6 @@ class CedShopeeProduct
 
             default:
                 return (float)$price;
-                break;
         }
         return (float)$price;
     }
@@ -444,7 +443,7 @@ class CedShopeeProduct
         if (isset($product['quantity']) && $product['quantity']) {
             $quantity = $product['quantity'];
         } elseif ($product_id) {
-            $result = Db::getInstance()->executeS("SELECT `quantity` FROM `" . _DB_PREFIX_ . "product` WHERE `id_product` = '" . $product_id . "'");
+            $result = Db::getInstance()->executeS("SELECT `quantity` FROM `" . _DB_PREFIX_ . "product` WHERE `id_product` = '" . (int)$product_id . "'");
             if (isset($result) && count($result)) {
                 $quantity = $result['0']['quantity'];
             } else {
@@ -532,7 +531,7 @@ class CedShopeeProduct
 
     public function getProductOptions($product_id, $store_attribute, $language_id, $attribute_shopee)
     {
-        if($product_id) {
+        if ($product_id) {
             $product_option_data = '';
         } else {
             $product_option_data = '';
@@ -556,7 +555,7 @@ class CedShopeeProduct
 
     public function getProductAttributes($product_id, $store_attribute, $language_id)
     {
-        if($language_id) {
+        if ($language_id) {
             $default_lang = $language_id;
         } else {
             $default_lang = (int)Configuration::get('PS_LANG_DEFAULT');
@@ -583,7 +582,7 @@ class CedShopeeProduct
             $profile_logistics = json_decode($profile_info['logistics'], true);
             if (!empty($profile_logistics) && isset($profile_logistics['logistics'])) {
                 foreach ($profile_logistics['logistics'] as $profile_logistic) {
-                    $result = Db::getInstance()->executeS("SELECT * FROM `". _DB_PREFIX_ ."cedshopee_logistics` WHERE logistic_id='".trim($profile_logistic)."'");
+                    $result = Db::getInstance()->executeS("SELECT * FROM `". _DB_PREFIX_ ."cedshopee_logistics` WHERE logistic_id='".pSQL(trim($profile_logistic))."'");
                     if (isset($result) && count($result) && isset($result['fee_type']) && ($result['fee_type']=='CUSTOM_PRICE')) {
                         $logistics[] = array('logistic_id' => (int)$profile_logistic,'enabled' =>  (bool) $result['enabled'], 'is_free' =>  (bool) $profile_logistics['is_free'],'shipping_fee' => $profile_logistics['shipping_fee']);
                     } elseif ($profile_logistic) {
@@ -598,7 +597,7 @@ class CedShopeeProduct
                 if (is_array($product_logistics['logistics']) && !empty($product_logistics['logistics'])) {
                     $logistics = array();
                     foreach ($product_logistics['logistics'] as $product_logistic) {
-                        $result = Db::getInstance()->executeS("SELECT * FROM `". _DB_PREFIX_ ."cedshopee_logistics` where logistic_id='".trim($profile_logistic)."'");
+                        $result = Db::getInstance()->executeS("SELECT * FROM `". _DB_PREFIX_ ."cedshopee_logistics` where logistic_id='".pSQL(trim($profile_logistic))."'");
                         if (isset($result) && count($result) && isset($result['fee_type']) && ($result['fee_type']=='CUSTOM_PRICE') && $product_logistic) {
                             $logistics[] = array('logistic_id' => (int)$product_logistic,'enabled' =>  (bool) $result['enabled'], 'is_free' =>  (bool) $product_logistics['is_free'],'shipping_fee' => (float)$product_logistics['shipping_fee']);
                         } elseif ($product_logistic) {
@@ -660,7 +659,7 @@ class CedShopeeProduct
             $required_attribute = array();
             $product_attribute = array();
             $Required_product_attribute = array();
-            $result = Db::getInstance()->executeS("SELECT attribute_id,attribute_name FROM `". _DB_PREFIX_ ."cedshopee_attribute` WHERE category_id='".$category."' AND is_mandatory='1'");
+            $result = Db::getInstance()->executeS("SELECT attribute_id,attribute_name FROM `". _DB_PREFIX_ ."cedshopee_attribute` WHERE category_id='".(int)$category."' AND is_mandatory='1'");
                
             if (isset($result) && count($result)) {
                 foreach ($result as $row) {
@@ -698,7 +697,7 @@ class CedShopeeProduct
         $result =false;
         $variants = $this->isVariantProduct($product_id, $default_lang);
         if (!empty($variants)) {
-            foreach ($variants as $key => $value) {
+            foreach ($variants as $value) {
                 $variation_data = Db::getInstance()->executeS("SELECT variation_id FROM `". _DB_PREFIX_ ."cedshopee_product_variations` WHERE `product_id` = '". (int)$product_id ."' AND `variation_sku` = '". pSQL($value['reference']) ."' ");
                 $variation_id = isset($variation_data['0']['variation_id']) ? $variation_data['0']['variation_id'] : '0';
                 $stock_data = array(
@@ -728,7 +727,7 @@ class CedShopeeProduct
         $result =false;
         $variants = $this->isVariantProduct($product_id, $default_lang);
         if (!empty($variants)) {
-            foreach ($variants as $key => $value) {
+            foreach ($variants as $value) {
                 $variation_data = Db::getInstance()->executeS("SELECT variation_id FROM `". _DB_PREFIX_ ."cedshopee_product_variations` WHERE `product_id` = '". (int)$product_id ."' AND `variation_sku` = '". pSQL($value['reference']) ."' ");
                 $variation_id = isset($variation_data['0']['variation_id']) ? $variation_data['0']['variation_id'] : '0';
                 $price_data = array(
@@ -758,7 +757,7 @@ class CedShopeeProduct
                 'shopee_item_id = 0'
             );
             $shopee_item_id = '';
-            $sql = "SELECT `shopee_item_id` FROM `". _DB_PREFIX_ ."cedshopee_uploaded_products` WHERE `product_id`='".$product_id."' AND shopee_item_id > 0";
+            $sql = "SELECT `shopee_item_id` FROM `". _DB_PREFIX_ ."cedshopee_uploaded_products` WHERE `product_id`='".(int)$product_id."' AND shopee_item_id > 0";
             $result = $db->executeS($sql);
             if ($result && count($result) && isset($result['0']['shopee_item_id'])) {
                 $shopee_item_id = $result['0']['shopee_item_id'];

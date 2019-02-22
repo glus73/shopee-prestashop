@@ -165,7 +165,7 @@ class AdminCedShopeeReturnController extends ModuleAdminController
     {
         $return_id = Tools::getValue('id');
         if (!empty($return_id)) {
-            $result = $this->db->executeS("SELECT * FROM `". _DB_PREFIX_ ."cedshopee_return` WHERE `id` = '". $return_id ."' ");
+            $result = $this->db->executeS("SELECT * FROM `". _DB_PREFIX_ ."cedshopee_return` WHERE `id` = '". (int)$return_id ."' ");
             $returnData = $result[0];
             if (!empty($returnData['return_data'])) {
                 $return_data = json_decode($returnData['return_data'], true);
@@ -229,7 +229,7 @@ class AdminCedShopeeReturnController extends ModuleAdminController
         $return_id = Tools::getValue('id');
         $request = Tools::getAllValues();
         if (!empty($return_id)) {
-            $returnsn = $this->db->getValue("SELECT `returnsn` FROM `". _DB_PREFIX_ ."cedshopee_return` WHERE `id` = '". $return_id ."' ");
+            $returnsn = $this->db->getValue("SELECT `returnsn` FROM `". _DB_PREFIX_ ."cedshopee_return` WHERE `id` = '". (int)$return_id ."' ");
             if (!empty($returnsn)) {
                 $url = 'returns/get';
                 $params = array(

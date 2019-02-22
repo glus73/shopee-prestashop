@@ -175,7 +175,7 @@ class CedShopeeProfile extends ObjectModel
     {
         $db = Db::getInstance();
         $brandArray = array();
-        $results = $db->executeS("SELECT * FROM `". _DB_PREFIX_ ."cedshopee_attribute` WHERE `category_id` = '".$catId."' AND `attribute_id` = '".$attribute_id."'");
+        $results = $db->executeS("SELECT * FROM `". _DB_PREFIX_ ."cedshopee_attribute` WHERE `category_id` = '".(int)$catId."' AND `attribute_id` = '".(int)$attribute_id."'");
         foreach ($results as $res) {
             $brandArray = array_merge_recursive($brandArray, json_decode($res['options'], true));
         }
@@ -186,7 +186,7 @@ class CedShopeeProfile extends ObjectModel
 
     public function getStoreOptions($catId, $attribute_group_id, $brandName)
     {
-        if($catId) {
+        if ($catId) {
             $option_value_data = array();
         } else {
             $option_value_data = array();

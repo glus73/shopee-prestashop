@@ -226,8 +226,8 @@ class AdminCedShopeeOrderController extends ModuleAdminController
                         
                         $this->context->smarty->assign(array('shippingInfo'  => $shippingInfo));
                         $order_info = array();
-                        foreach ($order_data as $key => $value) {
-                            foreach ($value as $key1 => $val) {
+                        foreach ($order_data as $value) {
+                            foreach ($value as $val) {
                                 $order_info[] = array(
                                         'order_id' => $val['ordersn'],
                                         'order_status' => $val['order_status'],
@@ -378,7 +378,6 @@ class AdminCedShopeeOrderController extends ModuleAdminController
     public function ajaxProcessCancelOrder()
     {
         $CedShopeeOrder = new CedShopeeOrder;
-        $request = Tools::getAllValues();
         $order_id = Tools::getValue('ordersn');
         $cancel_reason = Tools::getValue('cancel_reason');
         $cancel_data = array(

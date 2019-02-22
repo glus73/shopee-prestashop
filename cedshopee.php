@@ -36,10 +36,15 @@ class CedShopee extends Module
         $this->author = 'CedCommerce';
         $this->bootstrap = true;
         $this->need_instance = 1;
-        // $this->module_key = '3912dc2255d08bb8db35a1236856b6e4';
+         $this->module_key = 'a5e9830e9ca4ef5b71ca0d3b7f5839ac';
 
         $this->controllers = array('validation');
-        $this->secure_key = Tools::encrypt($this->name);
+        if (version_compare(_PS_VERSION_, '1.7.0', '>=') === true) {
+            $this->secure_key = Tools::hash($this->name);
+        } else {
+            $this->secure_key = Tools::encrypt($this->name);
+        }
+
         $this->is_eu_compatible = 1;
         $this->currencies = false;
         $this->displayName = $this->l('Shopee Integration');
@@ -50,13 +55,6 @@ class CedShopee extends Module
 
         $this->ps_versions_compliancy = array('min' => '1.6.0.0', 'max' => _PS_VERSION_);
         parent::__construct();
-
-        if (Tools::getIsset(Tools::getValue(array('action'))) &&
-            Tools::getIsset(Tools::getValue(array('message'))) &&
-            (trim(Tools::getValue(array('action'))) == 'validateResult')
-        ) {
-            $this->validateResult($_POST);
-        }
     }
 
     public function install()

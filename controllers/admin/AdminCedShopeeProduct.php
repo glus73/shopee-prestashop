@@ -323,6 +323,7 @@ class AdminCedShopeeProductController extends ModuleAdminController
         $this->context->smarty->assign(
             array(
                 'product_id' => $productID,
+                'data' => $data,
                 'token' => $this->token
             )
         );
@@ -337,7 +338,7 @@ class AdminCedShopeeProductController extends ModuleAdminController
         $productID = Tools::getValue('product_id');
         $json = array();
         if (!empty($productID)) {
-            $shopee_item_id = $this->db->getValue("SELECT `shopee_item_id` FROM `". _DB_PREFIX_ ."cedshopee_uploaded_products` WHERE `product_id` = '". $productID ."' ");
+            $shopee_item_id = $this->db->getValue("SELECT `shopee_item_id` FROM `". _DB_PREFIX_ ."cedshopee_uploaded_products` WHERE `product_id` = '". (int)$productID ."' ");
             if (!empty($shopee_item_id)) {
                 $url = 'item/get';
                 $params = array(
@@ -418,7 +419,7 @@ class AdminCedShopeeProductController extends ModuleAdminController
     public function getProductById($product_id)
     {
         $response = array();
-        $result = $this->db->executeS("SELECT * FROM `". _DB_PREFIX_ ."cedshopee_uploaded_products` WHERE `product_id` = '". $product_id ."' ");
+        $result = $this->db->executeS("SELECT * FROM `". _DB_PREFIX_ ."cedshopee_uploaded_products` WHERE `product_id` = '". (int)$product_id ."' ");
         if (!empty($result)) {
             $productData = $result[0];
             $response['logistics'] = json_decode($productData['logistics'], true);
@@ -435,7 +436,7 @@ class AdminCedShopeeProductController extends ModuleAdminController
         $logistics = Tools::getValue('shopeeLogistics');
         $wholesale = Tools::getValue('shopeeWholesale');
         if (!empty($product_id)) {
-            $productExist = $this->db->getValue("SELECT `id` FROM `". _DB_PREFIX_ ."cedshopee_uploaded_products` WHERE `product_id` = '". $product_id ."' ");
+            $productExist = $this->db->getValue("SELECT `id` FROM `". _DB_PREFIX_ ."cedshopee_uploaded_products` WHERE `product_id` = '". (int)$product_id ."' ");
             if (!empty($productExist)) {
                 $res = $this->db->update(
                     'cedshopee_uploaded_products',

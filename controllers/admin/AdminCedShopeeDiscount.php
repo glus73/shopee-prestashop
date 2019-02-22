@@ -92,8 +92,6 @@ class AdminCedShopeeDiscountController extends ModuleAdminController
     {
         $db = Db::getInstance();
         $CedShopeeDiscount = new CedShopeeDiscount();
-        $id = '';
-        $itemsData = array();
         $shopeeItems = array();
         $this->context->controller->addJqueryUi('ui.autocomplete');
 

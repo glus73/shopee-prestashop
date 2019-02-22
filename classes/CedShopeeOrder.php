@@ -47,7 +47,7 @@ class CedShopeeOrder
                         $count = 0;
                         $response['orders'] = array_chunk($response['orders'], '5');
 
-                        foreach ($response['orders'] as $key => $orders) {
+                        foreach ($response['orders'] as $orders) {
                             if (isset($orders) && $orders) {
                                 $order_to_fetch = array();
                                 foreach ($orders as $order) {
@@ -310,7 +310,7 @@ class CedShopeeOrder
             $productArray = array();
             // $sku = $orderData['sku'];
             $order_items = $orderData['items'];
-            foreach ($order_items as $orderLine => $item) {
+            foreach ($order_items as $item) {
                 $item_sku = isset($item['item_sku']) ? $item['item_sku'] : '';
                 $variation_sku = isset($item['variation_sku']) ? $item['variation_sku'] : '';
 
@@ -341,7 +341,6 @@ class CedShopeeOrder
                     return null;
                 }
                 if (!$producToAdd->checkQty((int)$qty)) {
-                    $quantity = $producToAdd->getQuantity($id_product);
                     $this->orderErrorInformation(
                         $sku,
                         $shopeeOrderId,

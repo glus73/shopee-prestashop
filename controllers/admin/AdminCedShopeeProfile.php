@@ -134,7 +134,6 @@ class AdminCedShopeeProfileController extends ModuleAdminController
 
     public function renderForm()
     {
-        $db = Db::getInstance();
         $profileData = array();
         $general = array();
         $storeCategory = array();

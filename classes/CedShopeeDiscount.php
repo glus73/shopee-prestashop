@@ -58,7 +58,7 @@ class CedShopeeDiscount extends ObjectModel
     {
         $db = Db::getInstance();
         if (isset($data) && !empty($data['filter_name'])) {
-            $sql = "SELECT cpp.`shopee_item_id`, pl.`name` FROM `"._DB_PREFIX_."cedshopee_profile_products` AS cpp LEFT JOIN `"._DB_PREFIX_."product_lang` AS pl ON(pl.id_product = cpp.product_id) WHERE pl.`name` LIKE '%". $data['filter_name'] ."%' ORDER BY pl.`name` ";
+            $sql = "SELECT cpp.`shopee_item_id`, pl.`name` FROM `"._DB_PREFIX_."cedshopee_profile_products` AS cpp LEFT JOIN `"._DB_PREFIX_."product_lang` AS pl ON(pl.id_product = cpp.product_id) WHERE pl.`name` LIKE '%". pSQL($data['filter_name']) ."%' ORDER BY pl.`name` ";
             $result = $db->executeS($sql);
         } else {
             $sql = "SELECT cpp.`shopee_item_id`, pl.`name` FROM `"._DB_PREFIX_."cedshopee_profile_products` AS cpp LEFT JOIN `"._DB_PREFIX_."product_lang` AS pl ON(pl.id_product = cpp.product_id) WHERE cpp.`shopee_item_id` > '0' AND pl.`id_lang` = '". (int) Context::getContext()->language->id."' ORDER BY pl.`name` ";
