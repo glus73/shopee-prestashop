@@ -24,80 +24,41 @@
 $('#validate').on('click', function() {
   // e.preventdefault();
 
-  $.ajax({
-      url: 'index.php?controller=AdminModules&configure=cedshopee&method=ajaxProcessValidateApi&ajax=1&action=validateApi&token={$token|escape:'htmlall':'UTF-8'}',
-      type: 'post',
-      data: {
-        'action' : 'validateApi',
-        'ajax' : true
-      },
-      dataType: 'json',
-      cache: false,
-      beforeSend: function() {
-          $('#form-save, #form-back').attr('disabled', true);
-          openNav();
-      },
-      complete: function() {
-          $('#form-save, #form-back').attr('disabled', false);
-          closeNav();
-      },
-      success: function(result) {
-          
-        if(result){
-       
-          if (!result.success) {
-              $('.error-message').remove();
-              $('#validate_credential_result').css('display', 'block');
-              $('#validate_credential_result').html('<span class="error-message" style="margin-left:2px; color:red;">'+result.message+'</span>').delay(5000).fadeOut();
-          }
+    $.ajax({
+        url: 'index.php?controller=AdminModules&configure=cedshopee&method=ajaxProcessValidateApi&ajax=1&action=validateApi&token={$token|escape:'htmlall':'UTF-8'}',
+        type: 'post',
+        data: {
+            'action' : 'validateApi',
+            'ajax' : true
+        },
+        dataType: 'json',
+        cache: false,
+        beforeSend: function() {
+            $('#form-save, #form-back').attr('disabled', true);
+        },
+        complete: function() {
+            $('#form-save, #form-back').attr('disabled', false);
+        },
+        success: function(result) {
 
-          if (result.success) {
-              $('.success-message').remove();
-              validateresult(result.message)
-          }
-        } else {
-          $('#validate_credential_result').css('display', 'block');
-          $('#validate_credential_result').html('<span class="error-message" style="margin-left:2px; color:red;">No response from Shopee</span>').delay(5000).fadeOut();
+
+            if (result && result.success) {
+                $('.success-message').remove();
+                $('#validate_credential_result').css('display', 'block');
+                $('#validate_credential_result').html('<span class="error-message" style="margin-left:2px; color:green;">'+result.message+'</span>').delay(5000).fadeOut();
+                $("#validate").attr('disabled',true);
+            }
+            else {
+                $('#validate_credential_result').css('display', 'block');
+                $('#validate_credential_result').html('<span class="error-message" style="margin-left:2px; color:red;">Validation Failed : '+result.message+'</span>').delay(5000).fadeOut();
+            }
+        },
+        error: function(xhr, ajaxOptions, thrownError) {
+            alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
         }
-      },
-      error: function(xhr, ajaxOptions, thrownError) {
-          alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
-      }
-  });
+    });
 });
 
-function validateresult(result) {
-  $.ajax({
-      url: 'index.php?controller=AdminModules&configure=cedshopee&method=ajaxProcessValidateResult&ajax=1&action=validateResult&token={$token|escape:'htmlall':'UTF-8'}',
-      type: 'post',
-      data: {
-        'result' : result,
-        'action' : 'validateResult',
-        'ajax' : true
-      },
-      dataType: 'json',
-      cache: false,
-      success: function(result) {
-          if (!result.success) {
-              $('.error-message').remove();
-              $('#validate_credential_result').css('display', 'block');
-              $('#validate_credential_result').html('<span class="error-message" style="margin-left:2px; color:red;">'+result.message+'</span>').delay(5000).fadeOut();
-          }
-
-          if (result.success) {
-              $('.success-message').remove();
-              $('#validate_credential_result').css('display', 'block');
-              $('#validate_credential_result').html('<span class="error-message" style="margin-left:2px; color:green;">'+result.message+'</span>').delay(5000).fadeOut();
-              // $('#validate').after('<div class="success-message" style="margin-left:2px; color:green;">'+json['message']+'</div>');
-              //$('#cedshopee_validate_status').val(json['message']);
-              $("#validate").attr('disabled',true);
-          }
-      },
-      error: function(xhr, ajaxOptions, thrownError) {
-          alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
-      }
-  });
-}
 </script>
 <style>
     .overlay {
@@ -157,11 +118,5 @@ function validateresult(result) {
   </div>
 </div>
 <script>
-    function openNav() {
-        document.getElementById("myNav").style.display = "block";
-    }
 
-    function closeNav() {
-        document.getElementById("myNav").style.display = "none";
-    }
 </script>

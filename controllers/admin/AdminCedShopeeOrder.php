@@ -327,7 +327,6 @@ class AdminCedShopeeOrderController extends ModuleAdminController
 
     public function processBulkCancel()
     {
-        $CedShopeeLibrary = new CedShopeeLibrary;
         $CedShopeeOrder = new CedShopeeOrder;
         $ids = Tools::getValue('orderBox');
         if (!empty($ids)) {

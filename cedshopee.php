@@ -177,6 +177,9 @@ class CedShopee extends Module
     {
         $tab = new Tab();
         $tab->active = 1;
+        if($class_name == 'AdminCedShopeeBulkUploadProduct' || $class_name == 'AdminCedShopeeUpdateStatus') {
+            $tab->active = 0;
+        }
         $tab->class_name = $class_name;
         $tab->name = array();
         foreach (Language::getLanguages(true) as $lang) {
@@ -225,7 +228,6 @@ class CedShopee extends Module
                     Configuration::updateValue(trim($key), Tools::getValue($key));
                 }
             }
-            $api_url = Configuration::get('CEDSHOPEE_API_URL');
             $partner_id = Configuration::get('CEDSHOPEE_PARTNER_ID');
             $shop_id = Configuration::get('CEDSHOPEE_SHOP_ID');
             $signature = Configuration::get('CEDSHOPEE_SIGNATURE');
@@ -420,6 +422,7 @@ class CedShopee extends Module
                     'type' => 'text',
                     'required' => true,
                     'name' => 'CEDSHOPEE_PARTNER_ID',
+                    'desc' => $this->l('Must be a valid number.'),
                     'label' => $this->l('Partner ID'),
                 ),
                 array(
@@ -427,6 +430,7 @@ class CedShopee extends Module
                     'type' => 'text',
                     'required' => true,
                     'name' => 'CEDSHOPEE_SHOP_ID',
+                    'desc' => $this->l('Must be a valid number.'),
                     'label' => $this->l('Shop ID'),
                 ),
                 array(
@@ -792,38 +796,20 @@ class CedShopee extends Module
         $response = $cedshopeeLib->postRequest($url, $params);
         $cedshopeeLib->log('=====validate===', 6, true);
         $cedshopeeLib->log(json_encode($response), 6, true);
+
         if (isset($response['error']) && $response['error']) {
-            $response   =   $response['msg'];
-            if ($response) {
-                die(json_encode(array('success'=> false, 'message' => 'Validation error : Please Check the above details')));
+            Configuration::updateValue('CEDSHOPEE_VALIDATE_STATUS', 0);
+            $msg   =   $response['msg'];
+            if (empty($msg))  {
+                $msg = 'Validation error : Please Check the above details';
             }
+                die(json_encode(array('success'=> false, 'message' => $msg)));
         } else {
+            Configuration::updateValue('CEDSHOPEE_VALIDATE_STATUS', 1);
             die(json_encode(array('success'=> true, 'message' => 'Woah You are all set. Details Validated Successfully')));
         }
     }
 
-    public function ajaxProcessValidateResult($post)
-    {
-        $db = Db::getInstance();
-        if (!isset($post['result'])) {
-            $post['result'] = Tools::getValue('result');
-        }
-        if (isset($post['result']) && $post['result']) {
-            $name ='CEDSHOPEE_VALIDATE_STATUS';
-            $id_shop = Context::getContext()->shop->id;
-            $value = $post['result'];
-            $if_exists = $db->ExecuteS("SELECT * FROM `" . _DB_PREFIX_ . "configuration` WHERE `name` = '" . pSQL($name) . "' AND id_shop = '" . (int)$id_shop . "'");
-            if ($if_exists && $if_exists->num_rows) {
-                $db->Execute("UPDATE " . _DB_PREFIX_ . "configuration SET `value` = '" . pSQL($value) . "'  WHERE `name` = '" . pSQL($name) . "' AND id_shop = '" . (int)$id_shop . "'");
-            } else {
-                $db->Execute("INSERT INTO " . _DB_PREFIX_ . "configuration SET id_shop = '" . (int)$id_shop . "', `name` = '" . pSQL($name) . "', `value` = '" . pSQL($value) . "'");
-            }
-            $message = $value ;
-            die(json_encode(array('success'=> true,'message' => $message)));
-        } else {
-            die(json_encode(array('success'=> false,'message' => 'Error while saving settings')));
-        }
-    }
 
     public function hookDisplayBackOfficeHeader()
     {

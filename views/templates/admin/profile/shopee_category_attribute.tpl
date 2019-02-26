@@ -116,12 +116,8 @@
                 $('.laybuy-loading').remove();
             },
             success: function(json) {
-                console.log(json);
                 document.getElementById('mapping_values').innerHTML=json;
             },
-            error: function(xhr, ajaxOptions, thrownError) {
-                alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
-            }
         });
     }
     function toggleOptions(panel_id) {

@@ -18,6 +18,19 @@
 
 class CedShopeeLibrary
 {
+    public $_api_url;
+    public $partner_id;
+    public $shop_id;
+    public $signature;
+
+    public function __construct()
+    {
+        $this->_api_url = Configuration::get('CEDSHOPEE_API_URL');
+        $this->partner_id = Configuration::get('CEDSHOPEE_PARTNER_ID');
+        $this->shop_id = Configuration::get('CEDSHOPEE_SHOP_ID');
+        $this->signature = Configuration::get('CEDSHOPEE_SIGNATURE');
+    }
+
     public function _init()
     {
         $this->_api_url = Configuration::get('CEDSHOPEE_API_URL');
@@ -86,6 +99,7 @@ class CedShopeeLibrary
                 if ($body) {
                     $body = json_decode($body, true);
                 }
+
                 if ($httpcode != 200) {
                     return $body;
                 }
@@ -109,6 +123,8 @@ class CedShopeeLibrary
                 );
                 return array('error' => $httpcode, 'msg' => $body);
             }
+        } else {
+            return array('error' => 'server_error', 'msg' => 'Module Is Not Enabled');
         }
     }
 
