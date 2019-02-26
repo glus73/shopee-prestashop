@@ -177,7 +177,7 @@ class CedShopee extends Module
     {
         $tab = new Tab();
         $tab->active = 1;
-        if($class_name == 'AdminCedShopeeBulkUploadProduct' || $class_name == 'AdminCedShopeeUpdateStatus') {
+        if ($class_name == 'AdminCedShopeeBulkUploadProduct' || $class_name == 'AdminCedShopeeUpdateStatus') {
             $tab->active = 0;
         }
         $tab->class_name = $class_name;
@@ -800,7 +800,7 @@ class CedShopee extends Module
         if (isset($response['error']) && $response['error']) {
             Configuration::updateValue('CEDSHOPEE_VALIDATE_STATUS', 0);
             $msg   =   $response['msg'];
-            if (empty($msg))  {
+            if (empty($msg)) {
                 $msg = 'Validation error : Please Check the above details';
             }
                 die(json_encode(array('success'=> false, 'message' => $msg)));

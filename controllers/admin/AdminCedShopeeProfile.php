@@ -425,9 +425,7 @@ class AdminCedShopeeProfileController extends ModuleAdminController
     public function ajaxProcessAttributesByCategory()
     {
         $db = Db::getInstance();
-        $result = Tools::getAllValues();
         $cedShopeeProfile = new cedShopeeProfile;
-        $profile_id = Tools::getValue('id');
         $category_id = Tools::getIsset('category_id') ? Tools::getValue('category_id') : 0;
         $profile_id = Tools::getIsset('profile_id') ? Tools::getValue('profile_id') : 0;
         $default_lang = (int)Configuration::get('PS_LANG_DEFAULT');
